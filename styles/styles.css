@@ -1,0 +1,162 @@
+/*
+justify-content ajusta en horizontal
+align-item ajusta en vertical
+*/
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400&display=swap');
+:root {
+  --pink: rgb(194, 104, 204);
+  --purple: rgb(129, 79, 230);
+}
+* {
+  box-sizing: border-box;
+  padding: 0px;
+  margin: 0px;
+}
+body {
+  font-family: 'Roboto', sans-serif;
+}
+a {
+  text-decoration: none;
+  cursor: pointer;
+  color: #000;
+}
+.shadow-box {
+  box-shadow: 0 10px 16px 0 rgba(0, 0, 0, 0.10);
+}
+.text-center {
+  text-align: center;
+}
+header {
+  width: 100%;
+  height: 80px;
+  position: fixed;
+  background-color: white;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+header div {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+header div nav{
+  justify-content: end;
+}
+
+header nav {
+  display: flex;
+  justify-content: end;
+}
+
+header nav .nav-right-section {
+  width: 250px;
+  height: auto;
+  display: flex;
+  list-style-type: none;
+  justify-content: center; 
+  align-items: center;
+}
+
+nav .nav-right-section a{
+  margin-right: 10px;
+  color: #000000;
+}
+main {
+  padding-top: 90px;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.cv-link {
+  border-radius: 10px;
+  border-color: black;
+  border: solid 1px;
+  width: 60px;
+  line-height: 35px;
+  text-align: center;
+  background-image: linear-gradient(to right, var(--pink) , var(--purple));
+  color: #fff;
+  transition: width 20s;
+}
+.cv-link:hover {
+  background-image: linear-gradient(to left, red , var(--purple));
+  width: 70px;
+  line-height: 45px;
+}
+
+.flex-active {
+  display: flex;
+}
+.wrap {
+  flex-wrap: wrap;
+}
+.center-horizontal {
+  justify-content: center; 
+  flex-wrap: wrap;
+}
+
+.rounded-image {
+  border-radius: 100%;
+}
+.my-image {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+}
+.font-color-gradient{
+  background: linear-gradient(to right,var(--pink), var(--purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+ul {
+  list-style-type: square;
+}
+
+footer {
+  background-color: #000;
+  color: #fff;
+}
+
+.card {
+  min-height: 100px;
+  border-radius: 15px;
+  padding: 10px;
+  margin: 20px 5px 0px 5px;
+}
+.card img {
+  border-radius: 15px;
+  width: 100%;
+  object-fit: contain;
+  border: #000 solid 1px;
+}
+.card p {
+  font-weight: 100;
+  margin-top: 5px;
+}
+.card-language {
+  width: 200px;
+  height: 200px;
+  border-radius: 300px;
+  border: #000 solid 5px;
+  object-fit: cover;
+  margin: 10px;
+}
+
+@media screen and (min-width: 800px) {
+  .card {
+    width: 320px;
+  }
+}
+@media screen and (min-width: 1430px) {
+  .card {
+    width: 438px;
+  }
+  .my-image {
+    width: 500px;
+    height: 500px;
+  }
+}
