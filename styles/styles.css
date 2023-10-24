@@ -2,6 +2,7 @@
 justify-content ajusta en horizontal
 align-item ajusta en vertical
 https://platzi.com/blog/bem/
+calc() css para hacer calculos
 */
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400&display=swap');
 :root {
