@@ -4,7 +4,7 @@ align-item ajusta en vertical
 https://platzi.com/blog/bem/
 calc() css para hacer calculos
 */
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400&display=swap");
 :root {
   --pink: rgb(194, 104, 204);
   --purple: rgb(129, 79, 230);
@@ -17,7 +17,7 @@ calc() css para hacer calculos
 }
 html {
   font-size: 62.5%;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
 }
 a {
   text-decoration: none;
@@ -25,7 +25,7 @@ a {
   color: #000;
 }
 .shadow-box {
-  box-shadow: 0 10px 16px 0 rgba(0, 0, 0, 0.10);
+  box-shadow: 0 10px 16px 0 rgba(0, 0, 0, 0.1);
 }
 .text-center {
   text-align: center;
@@ -45,7 +45,7 @@ header div {
   flex-direction: row;
   width: 100%;
 }
-header div nav{
+header div nav {
   justify-content: end;
 }
 
@@ -59,11 +59,11 @@ header nav .nav-right-section {
   height: auto;
   display: flex;
   list-style-type: none;
-  justify-content: center; 
+  justify-content: center;
   align-items: center;
 }
 
-nav .nav-right-section a{
+nav .nav-right-section a {
   margin-right: 10px;
   color: #000000;
 }
@@ -82,12 +82,12 @@ main {
   width: 60px;
   line-height: 35px;
   text-align: center;
-  background-image: linear-gradient(to right, var(--pink) , var(--purple));
+  background-image: linear-gradient(to right, var(--pink), var(--purple));
   color: #fff;
   transition: width 20s;
 }
 .cv-link:hover {
-  background-image: linear-gradient(to left, red , var(--purple));
+  background-image: linear-gradient(to left, red, var(--purple));
   width: 70px;
   line-height: 45px;
 }
@@ -99,7 +99,7 @@ main {
   flex-wrap: wrap;
 }
 .center-horizontal {
-  justify-content: center; 
+  justify-content: center;
   flex-wrap: wrap;
 }
 
@@ -111,8 +111,8 @@ main {
   height: 200px;
   object-fit: cover;
 }
-.font-color-gradient{
-  background: linear-gradient(to right,var(--pink), var(--purple));
+.font-color-gradient {
+  background: linear-gradient(to right, var(--pink), var(--purple));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -149,10 +149,19 @@ footer {
   object-fit: cover;
   margin: 10px;
 }
+.text-myself {
+  font-size: 2rem;
+  margin: 50px 300px;
+}
 
 @media screen and (min-width: 800px) {
   .card {
     width: 320px;
+  }
+}
+@media screen and (max-width: 400px) {
+  .text-myself {
+    margin: 50px 10px;
   }
 }
 @media screen and (min-width: 1430px) {
