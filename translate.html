@@ -18,10 +18,12 @@
             border-radius: 50%;
             height: 100px;
             width: 100px;
+            transition: transform 1000ms;
         }
 
         .circle:hover {
             transform: translate(20px, 20px);
+            
         }
 
         .shdaow2 {
@@ -36,6 +38,8 @@
             border-radius: 50%;
             height: 100px;
             width: 100px;
+            transition: transform 5000ms linear;
+            transition-delay: 1000ms;
         }
 
         .circle2:hover {
@@ -118,18 +122,16 @@
             height: 100px;
             width: 100px;
             border: 2px solid red;
-            perspective: 100px;
-            position: relative;
+            perspective: 200px;
         }
 
         .item {
-            position: absolute;
             background-color: black;
             height: 100px;
             width: 100px;
             opacity: 0.8;
             transform-style: preserve-3d;
-            transform: rotateX(20deg);
+            transform: rotatex(50deg);
         }
 
         .card {
@@ -148,7 +150,6 @@
             width: 100%;
             position: absolute;
             border-radius: 20px;
-            position: absolute;
             backface-visibility: hidden;
         }
 
