@@ -15,3 +15,16 @@
 - La propiedad perspective se utiliza para proveer de profundidad a un elemento con respecto al usuario y dar la sensación de 3D.
 
 - El valor que recibe la propiedad es una longitud (px, rem, etc.) que representa la profundidad del plano para construir la perspectiva.
+
+# PARALLAX
+- tema de css donde sea crea profundidad y movimiento estudiar mas
+
+# TIMING DEFAULT VALUES
+Recapitulando, una timing function es la representación de la progresión en función del tiempo de cada ciclo de una animación. Representa la aceleración del elemento desde un punto A hasta un punto B.
+
+- linear: El elemento se mueve a una aceleración constante.
+- ease: Es el valor predeterminado si no se especifica. El elemento acelera inicialmente, pero presenta mucha desaceleración.
+- ease-in: El elemento empieza lento pero termina rápido.
+- ease-out: El elemento empieza rápido pero termina lento.
+- ease-in-out: Es la combinación de ease-in y ease-out. El elemento empieza lento, a medida que avanza va acelerándose, pero termina lento.
+- cubic-bezier: Se necesitan cuatro números, que representan dos puntos de control para formar la curva de aceleración deseada.

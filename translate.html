@@ -131,22 +131,34 @@
             transform-style: preserve-3d;
             transform: rotateX(20deg);
         }
-        .card{
+
+        .card {
             width: 200px;
             height: 200px;
             transform-style: preserve-3d;
             position: relative;
         }
-        .face{
+
+        .card:hover {
+            transform: rotateY(180deg);
+        }
+
+        .face {
             height: 100%;
             width: 100%;
             position: absolute;
+            border-radius: 20px;
+            position: absolute;
+            backface-visibility: hidden;
         }
-        .face .front {
+
+        .face.front {
             background-color: pink;
         }
-        .face .back {
+
+        .face.back {
             background-color: red;
+            transform: rotateX(180deg);
         }
     </style>
 </head>
@@ -170,6 +182,7 @@
             <div class="face front"></div>
             <div class="face back"></div>
         </div>
+
     </div>
 
 </body>

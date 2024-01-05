@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .container {
+      background-color: red;
+      width: 400px;
+      height: 100px;
+      display: flex;
+      justify-content: space-between;
+      padding: 0px 30px
+    }
+
+    .container:hover .box {
+      transform: scale(1.2);
+    }
+
+    .box {
+      width: 100px;
+      height: 100px;
+
+    }
+
+    .box1 {
+      background-color: blue;
+      transition: transform 500ms;
+    }
+
+    .box2 {
+      background-color: yellow;
+      transition: transform 500s;
+    }
+
+    .box3 {
+      background-color: green;
+      transition: transform 1000ms;
+    }
+    .container2 {
+      background-color: red;
+      width: 400px;
+      height: 100px;
+      display: flex;
+      justify-content: space-between;
+      padding: 0px 30px
+    }
+
+    .container2:hover .box2 {
+      transform: scale(1.2);
+    }
+
+    .box2 {
+      width: 100px;
+      height: 100px;
+      
+    }
+    
+
+    .box4 {
+      background-color: rgb(142, 142, 201);
+      transition-delay: 20000s;
+      transition:background-color 200000s ;
+    }
+    .box4:hover{
+      background-color: aqua;
+    }
+    .box5 {
+      background-color: yellow;
+      transition: transform 500ms ease;/*tiempo en que se tarda en ejecutar un transicion*/
+      transition-delay: 2s;/*tiempo en el que se tarda en hacer la animacion*/
+    }
+
+    .box6 {
+      background-color: green;
+      transition: transform 1000ms;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="box box1"></div>
+    <div class="box box2"></div>
+    <div class="box box3"></div>
+
+  </div>
+  <br><br>
+  <div class="container2">
+    <div class="box2 box4"></div>
+    <div class="box2 box5"></div>
+    <div class="box2 box6"></div>
+
+  </div>
+</body>
+
+</html>
