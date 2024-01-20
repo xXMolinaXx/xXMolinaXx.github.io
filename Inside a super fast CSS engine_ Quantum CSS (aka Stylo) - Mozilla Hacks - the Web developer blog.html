@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<!-- saved from url=(0087)https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/ -->
+<html lang="en-US"><head data-template-path="https://hacks.mozilla.org/wp-content/themes/Hax"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="google-site-verification" content="w2ocEMd5yV9IsGCjhq-7ls67r4VH-Ob6oWdiZpqjN8U">
+
+  
+  <meta name="title" content="Inside a super fast CSS engine: Quantum CSS (aka Stylo) – Mozilla Hacks - the Web developer blog">
+  <meta name="description" content="Project Quantum is a major rewrite of Firefox’s internals to make Firefox fast. We’re swapping in parts from our experimental browser, Servo, and making massive improvements to other parts of ...">
+
+    <meta property="og:site_name" content="Mozilla Hacks – the Web developer blog">
+  <meta property="og:url" content="https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo">
+  <meta property="og:title" content="Inside a super fast CSS engine: Quantum CSS (aka Stylo) – Mozilla Hacks - the Web developer blog">
+  <meta property="og:description" content="Project Quantum is a major rewrite of Firefox’s internals to make Firefox fast. We’re swapping in parts from our experimental browser, Servo, and making massive improvements to other parts of ...">
+  <meta property="og:image" content="https://hacks.mozilla.org/wp-content/themes/Hax/img/hacks-meta-image.jpg">
+
+    <meta property="twitter:title" content="Inside a super fast CSS engine: Quantum CSS (aka Stylo) – Mozilla Hacks - the Web developer blog">
+  <meta property="twitter:description" content="Project Quantum is a major rewrite of Firefox’s internals to make Firefox fast. We’re swapping in parts from our experimental browser, Servo, and making massive improvements to other parts of ...">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:image" content="https://hacks.mozilla.org/wp-content/themes/Hax/img/hacks-meta-image.jpg">
+  <meta name="twitter:site" content="@mozhacks">
+
+  <link href="./Inside a super fast CSS engine_ Quantum CSS (aka Stylo) - Mozilla Hacks - the Web developer blog_files/css" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="./Inside a super fast CSS engine_ Quantum CSS (aka Stylo) - Mozilla Hacks - the Web developer blog_files/font-awesome.min.css">
+  <link rel="stylesheet" href="./Inside a super fast CSS engine_ Quantum CSS (aka Stylo) - Mozilla Hacks - the Web developer blog_files/style.css">
+  <link rel="stylesheet" href="./Inside a super fast CSS engine_ Quantum CSS (aka Stylo) - Mozilla Hacks - the Web developer blog_files/solarized_light.min.css">
+
+  <script type="text/javascript" async="" src="./Inside a super fast CSS engine_ Quantum CSS (aka Stylo) - Mozilla Hacks - the Web developer blog_files/ga.js.download"></script><script type="text/javascript">
+    window.hacks = {};
+    // http://cfsimplicity.com/61/removing-analytics-clutter-from-campaign-urls
+    var removeUtms  =   function(){
+        var l = window.location;
+        if( l.hash.indexOf( "utm" ) != -1 ){
+            var anchor = l.hash.match(/#(?!utm)[^&]+/);
+            anchor  =   anchor? anchor[0]: '';
+            if(!anchor && window.history.replaceState){
+                history.replaceState({},'', l.pathname + l.search);
+            } else {
+                l.hash = anchor;
+            }
+        };
+    };
+
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-35433268-8'],
+              ['_setAllowAnchor', true]);
+    _gaq.push (['_gat._anonymizeIp']);
+    _gaq.push(['_trackPageview']);
+    _gaq.push( removeUtms );
+    (function(d, k) {
+      var ga = d.createElement(k); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = 'https://ssl.google-analytics.com/ga.js';
+      var s = d.getElementsByTagName(k)[0]; s.parentNode.insertBefore(ga, s);
+    })(document, 'script');
+  </script>
+
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<meta name="blog-name" content="Mozilla Hacks - the Web developer blog">
+
+	<!-- This site is optimized with the Yoast SEO plugin v21.5 - https://yoast.com/wordpress/plugins/seo/ -->
+	<title>Inside a super fast CSS engine: Quantum CSS (aka&nbsp;Stylo) - Mozilla Hacks - the Web developer blog</title>
+	<link rel="canonical" href="https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/">
+	<meta name="twitter:label1" content="Written by">
+	<meta name="twitter:data1" content="Lin Clark">
+	<meta name="twitter:label2" content="Est. reading time">
+	<meta name="twitter:data2" content="13 minutes">
+	<script type="application/ld+json" class="yoast-schema-graph">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","@id":"https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/","url":"https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/","name":"Inside a super fast CSS engine: Quantum CSS (aka Stylo) - Mozilla Hacks - the Web developer blog","isPartOf":{"@id":"https://hacks.mozilla.org/#website"},"primaryImageOfPage":{"@id":"https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/#primaryimage"},"image":{"@id":"https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/#primaryimage"},"thumbnailUrl":"https://hacks.mozilla.org/files/2017/08/01-500x317.png","datePublished":"2017-08-22T15:30:55+00:00","dateModified":"2017-10-09T20:39:35+00:00","author":{"@id":"https://hacks.mozilla.org/#/schema/person/fdc22e85581e437b85a0cd908471e269"},"breadcrumb":{"@id":"https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/#breadcrumb"},"inLanguage":"en-US","potentialAction":[{"@type":"ReadAction","target":["https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/"]}]},{"@type":"ImageObject","inLanguage":"en-US","@id":"https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/#primaryimage","url":"https://hacks.mozilla.org/files/2017/08/01.png","contentUrl":"https://hacks.mozilla.org/files/2017/08/01.png","width":4136,"height":2619,"caption":"Isometric drawing of a jet engine"},{"@type":"BreadcrumbList","@id":"https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://hacks.mozilla.org/"},{"@type":"ListItem","position":2,"name":"Articles","item":"https://hacks.mozilla.org/articles/"},{"@type":"ListItem","position":3,"name":"Inside a super fast CSS engine: Quantum CSS (aka Stylo)"}]},{"@type":"WebSite","@id":"https://hacks.mozilla.org/#website","url":"https://hacks.mozilla.org/","name":"Mozilla Hacks - the Web developer blog","description":"hacks.mozilla.org","potentialAction":[{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://hacks.mozilla.org/?s={search_term_string}"},"query-input":"required name=search_term_string"}],"inLanguage":"en-US"},{"@type":"Person","@id":"https://hacks.mozilla.org/#/schema/person/fdc22e85581e437b85a0cd908471e269","name":"Lin Clark","image":{"@type":"ImageObject","inLanguage":"en-US","@id":"https://hacks.mozilla.org/#/schema/person/image/7d94f32230c8d945f07c72a8bc57210d","url":"https://secure.gravatar.com/avatar/f7eb52e40d86dcacb07dceb7c0bbd036?s=96&d=mm&r=g","contentUrl":"https://secure.gravatar.com/avatar/f7eb52e40d86dcacb07dceb7c0bbd036?s=96&d=mm&r=g","caption":"Lin Clark"},"description":"Lin works in Advanced Development at Mozilla, with a focus on Rust and WebAssembly.","sameAs":["https://twitter.com/linclark"],"url":"https://hacks.mozilla.org/author/lclarkmozilla-com/"}]}</script>
+	<!-- / Yoast SEO plugin. -->
+
+
+<link rel="alternate" type="application/rss+xml" title="Mozilla Hacks - the Web developer blog » Feed" href="https://hacks.mozilla.org/feed/">
+<link rel="alternate" type="application/rss+xml" title="Mozilla Hacks - the Web developer blog » Comments Feed" href="https://hacks.mozilla.org/comments/feed/">
+<link rel="alternate" type="application/rss+xml" title="Mozilla Hacks - the Web developer blog » Inside a super fast CSS engine: Quantum CSS (aka Stylo) Comments Feed" href="https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/feed/">
+<link rel="stylesheet" id="wp-block-library-css" href="./Inside a super fast CSS engine_ Quantum CSS (aka Stylo) - Mozilla Hacks - the Web developer blog_files/style.min.css" type="text/css" media="all">
+<style id="safe-svg-svg-icon-style-inline-css" type="text/css">
+.safe-svg-cover{text-align:center}.safe-svg-cover .safe-svg-inside{display:inline-block;max-width:100%}.safe-svg-cover svg{height:100%;max-height:100%;max-width:100%;width:100%}
+
+</style>
+<style id="classic-theme-styles-inline-css" type="text/css">
+/*! This file is auto-generated */
+.wp-block-button__link{color:#fff;background-color:#32373c;border-radius:9999px;box-shadow:none;text-decoration:none;padding:calc(.667em + 2px) calc(1.333em + 2px);font-size:1.125em}.wp-block-file__button{background:#32373c;color:#fff;text-decoration:none}
+</style>
+<style id="global-styles-inline-css" type="text/css">
+body{--wp--preset--color--black: #000000;--wp--preset--color--cyan-bluish-gray: #abb8c3;--wp--preset--color--white: #ffffff;--wp--preset--color--pale-pink: #f78da7;--wp--preset--color--vivid-red: #cf2e2e;--wp--preset--color--luminous-vivid-orange: #ff6900;--wp--preset--color--luminous-vivid-amber: #fcb900;--wp--preset--color--light-green-cyan: #7bdcb5;--wp--preset--color--vivid-green-cyan: #00d084;--wp--preset--color--pale-cyan-blue: #8ed1fc;--wp--preset--color--vivid-cyan-blue: #0693e3;--wp--preset--color--vivid-purple: #9b51e0;--wp--preset--gradient--vivid-cyan-blue-to-vivid-purple: linear-gradient(135deg,rgba(6,147,227,1) 0%,rgb(155,81,224) 100%);--wp--preset--gradient--light-green-cyan-to-vivid-green-cyan: linear-gradient(135deg,rgb(122,220,180) 0%,rgb(0,208,130) 100%);--wp--preset--gradient--luminous-vivid-amber-to-luminous-vivid-orange: linear-gradient(135deg,rgba(252,185,0,1) 0%,rgba(255,105,0,1) 100%);--wp--preset--gradient--luminous-vivid-orange-to-vivid-red: linear-gradient(135deg,rgba(255,105,0,1) 0%,rgb(207,46,46) 100%);--wp--preset--gradient--very-light-gray-to-cyan-bluish-gray: linear-gradient(135deg,rgb(238,238,238) 0%,rgb(169,184,195) 100%);--wp--preset--gradient--cool-to-warm-spectrum: linear-gradient(135deg,rgb(74,234,220) 0%,rgb(151,120,209) 20%,rgb(207,42,186) 40%,rgb(238,44,130) 60%,rgb(251,105,98) 80%,rgb(254,248,76) 100%);--wp--preset--gradient--blush-light-purple: linear-gradient(135deg,rgb(255,206,236) 0%,rgb(152,150,240) 100%);--wp--preset--gradient--blush-bordeaux: linear-gradient(135deg,rgb(254,205,165) 0%,rgb(254,45,45) 50%,rgb(107,0,62) 100%);--wp--preset--gradient--luminous-dusk: linear-gradient(135deg,rgb(255,203,112) 0%,rgb(199,81,192) 50%,rgb(65,88,208) 100%);--wp--preset--gradient--pale-ocean: linear-gradient(135deg,rgb(255,245,203) 0%,rgb(182,227,212) 50%,rgb(51,167,181) 100%);--wp--preset--gradient--electric-grass: linear-gradient(135deg,rgb(202,248,128) 0%,rgb(113,206,126) 100%);--wp--preset--gradient--midnight: linear-gradient(135deg,rgb(2,3,129) 0%,rgb(40,116,252) 100%);--wp--preset--font-size--small: 13px;--wp--preset--font-size--medium: 20px;--wp--preset--font-size--large: 36px;--wp--preset--font-size--x-large: 42px;--wp--preset--spacing--20: 0.44rem;--wp--preset--spacing--30: 0.67rem;--wp--preset--spacing--40: 1rem;--wp--preset--spacing--50: 1.5rem;--wp--preset--spacing--60: 2.25rem;--wp--preset--spacing--70: 3.38rem;--wp--preset--spacing--80: 5.06rem;--wp--preset--shadow--natural: 6px 6px 9px rgba(0, 0, 0, 0.2);--wp--preset--shadow--deep: 12px 12px 50px rgba(0, 0, 0, 0.4);--wp--preset--shadow--sharp: 6px 6px 0px rgba(0, 0, 0, 0.2);--wp--preset--shadow--outlined: 6px 6px 0px -3px rgba(255, 255, 255, 1), 6px 6px rgba(0, 0, 0, 1);--wp--preset--shadow--crisp: 6px 6px 0px rgba(0, 0, 0, 1);}:where(.is-layout-flex){gap: 0.5em;}:where(.is-layout-grid){gap: 0.5em;}body .is-layout-flow > .alignleft{float: left;margin-inline-start: 0;margin-inline-end: 2em;}body .is-layout-flow > .alignright{float: right;margin-inline-start: 2em;margin-inline-end: 0;}body .is-layout-flow > .aligncenter{margin-left: auto !important;margin-right: auto !important;}body .is-layout-constrained > .alignleft{float: left;margin-inline-start: 0;margin-inline-end: 2em;}body .is-layout-constrained > .alignright{float: right;margin-inline-start: 2em;margin-inline-end: 0;}body .is-layout-constrained > .aligncenter{margin-left: auto !important;margin-right: auto !important;}body .is-layout-constrained > :where(:not(.alignleft):not(.alignright):not(.alignfull)){max-width: var(--wp--style--global--content-size);margin-left: auto !important;margin-right: auto !important;}body .is-layout-constrained > .alignwide{max-width: var(--wp--style--global--wide-size);}body .is-layout-flex{display: flex;}body .is-layout-flex{flex-wrap: wrap;align-items: center;}body .is-layout-flex > *{margin: 0;}body .is-layout-grid{display: grid;}body .is-layout-grid > *{margin: 0;}:where(.wp-block-columns.is-layout-flex){gap: 2em;}:where(.wp-block-columns.is-layout-grid){gap: 2em;}:where(.wp-block-post-template.is-layout-flex){gap: 1.25em;}:where(.wp-block-post-template.is-layout-grid){gap: 1.25em;}.has-black-color{color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-color{color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-color{color: var(--wp--preset--color--white) !important;}.has-pale-pink-color{color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-color{color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-color{color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-color{color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-color{color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-color{color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-color{color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-color{color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-color{color: var(--wp--preset--color--vivid-purple) !important;}.has-black-background-color{background-color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-background-color{background-color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-background-color{background-color: var(--wp--preset--color--white) !important;}.has-pale-pink-background-color{background-color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-background-color{background-color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-background-color{background-color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-background-color{background-color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-background-color{background-color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-background-color{background-color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-background-color{background-color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-background-color{background-color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-background-color{background-color: var(--wp--preset--color--vivid-purple) !important;}.has-black-border-color{border-color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-border-color{border-color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-border-color{border-color: var(--wp--preset--color--white) !important;}.has-pale-pink-border-color{border-color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-border-color{border-color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-border-color{border-color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-border-color{border-color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-border-color{border-color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-border-color{border-color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-border-color{border-color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-border-color{border-color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-border-color{border-color: var(--wp--preset--color--vivid-purple) !important;}.has-vivid-cyan-blue-to-vivid-purple-gradient-background{background: var(--wp--preset--gradient--vivid-cyan-blue-to-vivid-purple) !important;}.has-light-green-cyan-to-vivid-green-cyan-gradient-background{background: var(--wp--preset--gradient--light-green-cyan-to-vivid-green-cyan) !important;}.has-luminous-vivid-amber-to-luminous-vivid-orange-gradient-background{background: var(--wp--preset--gradient--luminous-vivid-amber-to-luminous-vivid-orange) !important;}.has-luminous-vivid-orange-to-vivid-red-gradient-background{background: var(--wp--preset--gradient--luminous-vivid-orange-to-vivid-red) !important;}.has-very-light-gray-to-cyan-bluish-gray-gradient-background{background: var(--wp--preset--gradient--very-light-gray-to-cyan-bluish-gray) !important;}.has-cool-to-warm-spectrum-gradient-background{background: var(--wp--preset--gradient--cool-to-warm-spectrum) !important;}.has-blush-light-purple-gradient-background{background: var(--wp--preset--gradient--blush-light-purple) !important;}.has-blush-bordeaux-gradient-background{background: var(--wp--preset--gradient--blush-bordeaux) !important;}.has-luminous-dusk-gradient-background{background: var(--wp--preset--gradient--luminous-dusk) !important;}.has-pale-ocean-gradient-background{background: var(--wp--preset--gradient--pale-ocean) !important;}.has-electric-grass-gradient-background{background: var(--wp--preset--gradient--electric-grass) !important;}.has-midnight-gradient-background{background: var(--wp--preset--gradient--midnight) !important;}.has-small-font-size{font-size: var(--wp--preset--font-size--small) !important;}.has-medium-font-size{font-size: var(--wp--preset--font-size--medium) !important;}.has-large-font-size{font-size: var(--wp--preset--font-size--large) !important;}.has-x-large-font-size{font-size: var(--wp--preset--font-size--x-large) !important;}
+.wp-block-navigation a:where(:not(.wp-element-button)){color: inherit;}
+:where(.wp-block-post-template.is-layout-flex){gap: 1.25em;}:where(.wp-block-post-template.is-layout-grid){gap: 1.25em;}
+:where(.wp-block-columns.is-layout-flex){gap: 2em;}:where(.wp-block-columns.is-layout-grid){gap: 2em;}
+.wp-block-pullquote{font-size: 1.5em;line-height: 1.6;}
+</style>
+<script type="text/javascript" src="./Inside a super fast CSS engine_ Quantum CSS (aka Stylo) - Mozilla Hacks - the Web developer blog_files/jquery.min.js.download" id="jquery-core-js"></script>
+<script type="text/javascript" src="./Inside a super fast CSS engine_ Quantum CSS (aka Stylo) - Mozilla Hacks - the Web developer blog_files/jquery-migrate.min.js.download" id="jquery-migrate-js"></script>
+<script type="text/javascript" src="./Inside a super fast CSS engine_ Quantum CSS (aka Stylo) - Mozilla Hacks - the Web developer blog_files/analytics.js.download" id="analytics-js"></script>
+<link rel="https://api.w.org/" href="https://hacks.mozilla.org/wp-json/"><link rel="alternate" type="application/json" href="https://hacks.mozilla.org/wp-json/wp/v2/posts/31179"><link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://hacks.mozilla.org/xmlrpc.php?rsd">
+<link rel="shortlink" href="https://hacks.mozilla.org/?p=31179">
+<link rel="alternate" type="application/json+oembed" href="https://hacks.mozilla.org/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fhacks.mozilla.org%2F2017%2F08%2Finside-a-super-fast-css-engine-quantum-css-aka-stylo%2F">
+<link rel="alternate" type="text/xml+oembed" href="https://hacks.mozilla.org/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fhacks.mozilla.org%2F2017%2F08%2Finside-a-super-fast-css-engine-quantum-css-aka-stylo%2F&amp;format=xml">
+<link rel="shortcut icon" type="image/x-icon" href="https://hacks.mozilla.org/wp-content/themes/Hax/favicon.ico"><style>#wpadminbar #wp-admin-bar-site-name>.ab-item:before { content: none !important;}li#wp-admin-bar-site-name a { background: url( "https://hacks.mozilla.org/wp-content/themes/Hax/favicon.ico" ) left center/20px no-repeat !important; padding-left: 21px !important; background-size: 20px !important; } li#wp-admin-bar-site-name { margin-left: 5px !important; } li#wp-admin-bar-site-name {} #wp-admin-bar-site-name div a { background: none !important; }
+</style><script src="./Inside a super fast CSS engine_ Quantum CSS (aka Stylo) - Mozilla Hacks - the Web developer blog_files/newsletter.js.download"></script></head>
+<body>
+  <div class="outer-wrapper">
+    <header class="section section--fullwidth header">
+      <div class="masthead row">
+        <div class="branding block block--3">
+          <h1>
+            <a href="https://hacks.mozilla.org/">
+              <img class="branding__logo" src="./Inside a super fast CSS engine_ Quantum CSS (aka Stylo) - Mozilla Hacks - the Web developer blog_files/mdn-logo-mono.svg">
+              <img class="branding__wordmark" src="./Inside a super fast CSS engine_ Quantum CSS (aka Stylo) - Mozilla Hacks - the Web developer blog_files/wordmark.svg" alt="Mozilla">
+              <span class="branding__title">Hac<span class="logo-askew">k</span>s</span>
+            </a>
+          </h1>
+        </div>
+        <div class="search block block--2">
+          <form class="search__form" method="get" action="https://hacks.mozilla.org/">
+            <input type="search" name="s" class="search__input" placeholder="Search Mozilla Hacks" value="">
+            <i class="fa fa-search search__badge"></i>
+          </form>
+        </div>
+        <nav class="social">
+          <a class="social__link youtube" href="http://www.youtube.com/user/mozhacks" title="YouTube"><i class="fa fa-youtube" aria-hidden="true"></i><span>Hacks on YouTube</span></a>
+          <a class="social__link twitter" href="https://twitter.com/mozhacks" title="Twitter"><i class="fa fa-twitter" aria-hidden="true"></i><span>@mozhacks on Twitter</span></a>
+          <a class="social__link rss" href="https://hacks.mozilla.org/feed/" title="RSS Feed"><i class="fa fa-rss" aria-hidden="true"></i><span>Hacks RSS Feed</span></a>
+          <a class="fx-button" href="https://www.mozilla.org/firefox/download/thanks/?utm_source=hacks.mozilla.org&amp;utm_medium=referral&amp;utm_campaign=header-download-button&amp;utm_content=header-download-button">Download Firefox</a>
+        </nav>
+      </div>
+    </header>
+
+  
+<div id="content-head" class="section">
+  <h1 class="post__title">Inside a super fast CSS engine: Quantum CSS (aka&nbsp;Stylo)</h1>
+  <div class="byline">
+    <h3 class="post__author">
+                      <img alt="" src="./Inside a super fast CSS engine_ Quantum CSS (aka Stylo) - Mozilla Hacks - the Web developer blog_files/f7eb52e40d86dcacb07dceb7c0bbd036.png" srcset="https://secure.gravatar.com/avatar/f7eb52e40d86dcacb07dceb7c0bbd036?s=128&amp;d=mm&amp;r=g 2x" class="avatar avatar-64 photo" height="64" width="64" loading="lazy" decoding="async">        By
+                                        <a class="url" href="https://twitter.com/linclark" rel="external me">Lin Clark</a>                            </h3>
+    <div class="post__meta">
+      Posted on
+      <abbr class="published" title="2017-08-22T08:30:55-07:00">
+        August 22, 2017      </abbr>
+      <span class="entry-cat">in
+        <a href="https://hacks.mozilla.org/category/code-cartoons/" rel="category tag" title="View all posts in Code Cartoons">Code Cartoons</a>, <a href="https://hacks.mozilla.org/category/css/" rel="category tag" title="View all posts in CSS">CSS</a>,  and <a href="https://hacks.mozilla.org/category/featured/" rel="category tag" title="View all posts in Featured Article">Featured Article</a>      </span>
+            <div class="socialshare" data-type="bubbles"></div>
+    </div>
+  </div>
+</div>
+
+<main id="content-main" class="section article">
+  <article class="post" role="article">
+    <p>You may have heard of Project Quantum… it’s a major rewrite of Firefox’s internals to make Firefox fast. We’re swapping in parts from our experimental browser, Servo, and making massive improvements to other parts of the engine.</p>
+<p>The project has been compared to replacing a jet engine while the jet is still in flight. We’re making the changes in place, component by component, so that you can see the effects in Firefox as soon as each component is ready.</p>
+<p><a href="https://hacks.mozilla.org/files/2017/08/01.png"><img decoding="async" fetchpriority="high" class="alignnone size-large wp-image-31180" src="./Inside a super fast CSS engine_ Quantum CSS (aka Stylo) - Mozilla Hacks - the Web developer blog_files/01-500x317.png" alt="" width="500" height="317" srcset="https://hacks.mozilla.org/files/2017/08/01-500x317.png 500w, https://hacks.mozilla.org/files/2017/08/01-250x158.png 250w, https://hacks.mozilla.org/files/2017/08/01-768x486.png 768w" sizes="(max-width: 500px) 100vw, 500px"></a></p>
+<p>And the first major component from Servo—a new CSS engine called Quantum CSS (previously known as Stylo)—is now available for testing in our Nightly version. You can make sure that it’s turned on for you by going to <code>about:config</code> and setting <code>layout.css.servo.enabled</code> to true.</p>
+<p>This new engine brings together state-of-the-art innovations from four different browsers to create a new super CSS engine.</p>
+<p><a href="https://hacks.mozilla.org/files/2017/08/02.png"><img decoding="async" class="alignnone size-large wp-image-31181" src="./Inside a super fast CSS engine_ Quantum CSS (aka Stylo) - Mozilla Hacks - the Web developer blog_files/02-500x380.png" alt="4 browser engines feeding in to Quantum CSS" width="500" height="380" srcset="https://hacks.mozilla.org/files/2017/08/02-500x380.png 500w, https://hacks.mozilla.org/files/2017/08/02-250x190.png 250w, https://hacks.mozilla.org/files/2017/08/02-768x583.png 768w" sizes="(max-width: 500px) 100vw, 500px"></a></p>
+<p>It takes advantage of modern hardware, parallelizing the work across all of the cores in your machine. This means it can run up to 2 or 4 or even 18 times faster.</p>
+<p>On top of that, it combines existing state-of-the-art optimizations from other browsers. So even if it weren’t running in parallel, it would still be one fast CSS engine.</p>
+<p><a href="https://hacks.mozilla.org/files/2017/08/03.png"><img decoding="async" class="alignnone size-large wp-image-31182" src="./Inside a super fast CSS engine_ Quantum CSS (aka Stylo) - Mozilla Hacks - the Web developer blog_files/03-500x179.png" alt="Racing jets" width="500" height="179" srcset="https://hacks.mozilla.org/files/2017/08/03-500x179.png 500w, https://hacks.mozilla.org/files/2017/08/03-250x90.png 250w, https://hacks.mozilla.org/files/2017/08/03-768x275.png 768w" sizes="(max-width: 500px) 100vw, 500px"></a></p>
+<p>But what does the CSS engine do? First let’s look at the CSS engine and how it fits into the rest of the browser. Then we can look at how Quantum CSS makes it all faster.</p>
+<h3>What does the CSS engine do?</h3>
+<p>The CSS engine is part of the browser’s rendering engine. The rendering engine takes the website’s HTML and CSS files and turns them into pixels on the screen.</p>
+<p><a href="https://hacks.mozilla.org/files/2017/08/04.png"><img decoding="async" loading="lazy" class="alignnone size-large wp-image-31183" src="./Inside a super fast CSS engine_ Quantum CSS (aka Stylo) - Mozilla Hacks - the Web developer blog_files/04-500x133.png" alt="Files to pixels" width="500" height="133" srcset="https://hacks.mozilla.org/files/2017/08/04-500x133.png 500w, https://hacks.mozilla.org/files/2017/08/04-250x67.png 250w, https://hacks.mozilla.org/files/2017/08/04-768x204.png 768w, https://hacks.mozilla.org/files/2017/08/04.png 1800w" sizes="(max-width: 500px) 100vw, 500px"></a></p>
+<p>Each browser has a rendering engine. In Chrome, it’s called Blink. In Edge, it’s called EdgeHTML. In Safari, it’s called WebKit. And in Firefox, it’s called Gecko.</p>
+<p>To get from files to pixels, all of these rendering engines basically do the same things:</p>
+<ol>
+<li>Parse the files into objects the browser can understand, including the DOM. At this point, the DOM knows about the structure of the page. It knows about parent/child relationships between elements. It doesn’t know what those elements should look like, though.<a href="https://hacks.mozilla.org/files/2017/08/05-01.png"><img decoding="async" loading="lazy" class="alignnone size-large wp-image-31206" src="./Inside a super fast CSS engine_ Quantum CSS (aka Stylo) - Mozilla Hacks - the Web developer blog_files/05-01-500x349.png" alt="Parsing the HTML into a DOM tree" width="500" height="349" srcset="https://hacks.mozilla.org/files/2017/08/05-01-500x349.png 500w, https://hacks.mozilla.org/files/2017/08/05-01-250x174.png 250w, https://hacks.mozilla.org/files/2017/08/05-01-768x535.png 768w" sizes="(max-width: 500px) 100vw, 500px"></a></li>
+<li>Figure out what the elements should look like. For each DOM node, the CSS engine figures out which CSS rules apply. Then it figures out values for each CSS property for that DOM node.<a href="https://hacks.mozilla.org/files/2017/08/05-02.png"><img decoding="async" loading="lazy" class="alignnone size-large wp-image-31207" src="./Inside a super fast CSS engine_ Quantum CSS (aka Stylo) - Mozilla Hacks - the Web developer blog_files/05-02-500x340.png" alt="Styling each DOM node in the tree by attaching computed styles" width="500" height="340" srcset="https://hacks.mozilla.org/files/2017/08/05-02-500x340.png 500w, https://hacks.mozilla.org/files/2017/08/05-02-250x170.png 250w, https://hacks.mozilla.org/files/2017/08/05-02-768x523.png 768w" sizes="(max-width: 500px) 100vw, 500px"></a></li>
+<li>Figure out dimensions for each node and where it goes on the screen. Boxes are created for each thing that will show up on the screen. The boxes don’t just represent DOM nodes… you will also have boxes for things inside the DOM nodes, like lines of text.<a href="https://hacks.mozilla.org/files/2017/08/05-3.png"><img decoding="async" loading="lazy" class="alignnone size-large wp-image-31208" src="./Inside a super fast CSS engine_ Quantum CSS (aka Stylo) - Mozilla Hacks - the Web developer blog_files/05-3-500x371.png" alt="Measuring all of the boxes to create a frame tree" width="500" height="371" srcset="https://hacks.mozilla.org/files/2017/08/05-3-500x371.png 500w, https://hacks.mozilla.org/files/2017/08/05-3-250x185.png 250w, https://hacks.mozilla.org/files/2017/08/05-3-768x570.png 768w" sizes="(max-width: 500px) 100vw, 500px"></a></li>
+<li>Paint the different boxes. This can happen on multiple layers. I think of this like old-time hand drawn animation, with onionskin layers of paper. That makes it possible to just change one layer without having to repaint things on other layers.<a href="https://hacks.mozilla.org/files/2017/08/05-04.png"><img decoding="async" loading="lazy" class="alignnone size-large wp-image-31209" src="./Inside a super fast CSS engine_ Quantum CSS (aka Stylo) - Mozilla Hacks - the Web developer blog_files/05-04-500x356.png" alt="Painting layers" width="500" height="356" srcset="https://hacks.mozilla.org/files/2017/08/05-04-500x356.png 500w, https://hacks.mozilla.org/files/2017/08/05-04-250x178.png 250w, https://hacks.mozilla.org/files/2017/08/05-04-768x547.png 768w" sizes="(max-width: 500px) 100vw, 500px"></a></li>
+<li>Take those different painted layers, apply any compositor-only properties like transforms, and turn them into one image. This is basically like taking a picture of the layers stacked together. This image will then be rendered on the screen.<a href="https://hacks.mozilla.org/files/2017/08/05-05.png"><img decoding="async" loading="lazy" class="alignnone size-large wp-image-31210" src="./Inside a super fast CSS engine_ Quantum CSS (aka Stylo) - Mozilla Hacks - the Web developer blog_files/05-05-500x334.png" alt="Assembling the layers together and taking a picture" width="500" height="334" srcset="https://hacks.mozilla.org/files/2017/08/05-05-500x334.png 500w, https://hacks.mozilla.org/files/2017/08/05-05-250x167.png 250w, https://hacks.mozilla.org/files/2017/08/05-05-768x513.png 768w" sizes="(max-width: 500px) 100vw, 500px"></a></li>
+</ol>
+<p>This means when it starts calculating the styles, the CSS engine has two things:</p>
+<ul>
+<li>a DOM tree</li>
+<li>a list of style rules</li>
+</ul>
+<p>It goes through each DOM node, one by one, and figures out the styles for that DOM node. As part of this, it gives the DOM node a value for each and every CSS property, even if the stylesheets don’t declare a value for that property.</p>
+<p>I think of it kind of like somebody going through and filling out a form. They need to fill out one of these forms for each DOM node. And for each form field, they need to have an answer.</p>
+<p><a href="https://hacks.mozilla.org/files/2017/08/06.png"><img decoding="async" loading="lazy" class="alignnone size-large wp-image-31185" src="./Inside a super fast CSS engine_ Quantum CSS (aka Stylo) - Mozilla Hacks - the Web developer blog_files/06-500x296.png" alt="Blank form with CSS properties" width="500" height="296" srcset="https://hacks.mozilla.org/files/2017/08/06-500x296.png 500w, https://hacks.mozilla.org/files/2017/08/06-250x148.png 250w, https://hacks.mozilla.org/files/2017/08/06-768x455.png 768w" sizes="(max-width: 500px) 100vw, 500px"></a></p>
+<p>To do this, the CSS engine needs to do two things:</p>
+<ul>
+<li>figure out which rules apply to the node — aka <strong class="markup--strong markup--li-strong">selector matching</strong></li>
+<li>fill in any missing values with values from the parent or a default value—aka <strong class="markup--strong markup--li-strong">the cascade</strong></li>
+</ul>
+<h4>Selector matching</h4>
+<p>For this step, we’ll add any rule that matches the DOM node to a list. Because multiple rules can match, there may be multiple declarations for the same property.</p>
+<p><a href="https://hacks.mozilla.org/files/2017/08/07.png"><img decoding="async" loading="lazy" class="alignnone size-large wp-image-31186" src="./Inside a super fast CSS engine_ Quantum CSS (aka Stylo) - Mozilla Hacks - the Web developer blog_files/07-500x407.png" alt="Person putting check marks next to matching CSS rules" width="500" height="407" srcset="https://hacks.mozilla.org/files/2017/08/07-500x407.png 500w, https://hacks.mozilla.org/files/2017/08/07-250x203.png 250w, https://hacks.mozilla.org/files/2017/08/07-768x625.png 768w" sizes="(max-width: 500px) 100vw, 500px"></a></p>
+<p>Plus, the browser itself adds some default CSS (called user agent style sheets). How does the CSS engine know which value to pick?</p>
+<p>This is where specificity rules come in. The CSS engine basically creates a spreadsheet. Then it sorts the declarations based on different columns.</p>
+<p><a href="https://hacks.mozilla.org/files/2017/08/08.png"><img decoding="async" loading="lazy" class="alignnone size-large wp-image-31187" src="./Inside a super fast CSS engine_ Quantum CSS (aka Stylo) - Mozilla Hacks - the Web developer blog_files/08-500x210.png" alt="Declarations in a spreadsheet" width="500" height="210" srcset="https://hacks.mozilla.org/files/2017/08/08-500x210.png 500w, https://hacks.mozilla.org/files/2017/08/08-250x105.png 250w, https://hacks.mozilla.org/files/2017/08/08-768x323.png 768w" sizes="(max-width: 500px) 100vw, 500px"></a></p>
+<p>The rule that has the highest specificity wins. So based on this spreadsheet, the CSS engine fills out the values that it can.</p>
+<p><a href="https://hacks.mozilla.org/files/2017/08/09.png"><img decoding="async" loading="lazy" class="alignnone size-large wp-image-31188" src="./Inside a super fast CSS engine_ Quantum CSS (aka Stylo) - Mozilla Hacks - the Web developer blog_files/09-500x297.png" alt="Form with some CSS properties filled in" width="500" height="297" srcset="https://hacks.mozilla.org/files/2017/08/09-500x297.png 500w, https://hacks.mozilla.org/files/2017/08/09-250x148.png 250w, https://hacks.mozilla.org/files/2017/08/09-768x456.png 768w" sizes="(max-width: 500px) 100vw, 500px"></a></p>
+<p>For the rest, we’ll use the cascade.</p>
+<h4>The cascade</h4>
+<p>The cascade makes CSS easier to write and maintain. Because of the cascade, you can set the <code>color</code> property on the body and know that text in <code>p</code>, and <code>span</code>, and <code>li</code> elements will all use that color (unless you have a more specific override).</p>
+<p>To do this, the CSS engine looks at the blank boxes on its form. If the property inherits by default, then the CSS engine walks up the tree to see if one of the ancestors has a value. If none of the ancestors have a value, or if the property does not inherit, it will get a default value.</p>
+<p><a href="https://hacks.mozilla.org/files/2017/08/10.png"><img decoding="async" loading="lazy" class="alignnone size-large wp-image-31189" src="./Inside a super fast CSS engine_ Quantum CSS (aka Stylo) - Mozilla Hacks - the Web developer blog_files/10-500x295.png" alt="Form will all CSS properties filled in" width="500" height="295" srcset="https://hacks.mozilla.org/files/2017/08/10-500x295.png 500w, https://hacks.mozilla.org/files/2017/08/10-250x147.png 250w, https://hacks.mozilla.org/files/2017/08/10-768x453.png 768w" sizes="(max-width: 500px) 100vw, 500px"></a></p>
+<p>So now all of the styles have been computed for this DOM node.</p>
+<h4>A sidenote: style struct sharing</h4>
+<p>The form that I’ve been showing you is a little misrepresentative. CSS has hundreds of properties. If the CSS engine held on to a value for each property for each DOM node, it would soon run out of memory.</p>
+<p>Instead, engines usually do something called style struct sharing. They store data that usually goes together (like font properties) in a different object called a style struct. Then, instead of having all of the properties in the same object, the computed styles object just has pointers. For each category, there’s a pointer to the style struct that has the right values for this DOM node.</p>
+<p><a href="https://hacks.mozilla.org/files/2017/08/11.png"><img decoding="async" loading="lazy" class="alignnone size-large wp-image-31190" src="./Inside a super fast CSS engine_ Quantum CSS (aka Stylo) - Mozilla Hacks - the Web developer blog_files/11-500x184.png" alt="Chunks of the form pulled out to separate objects" width="500" height="184" srcset="https://hacks.mozilla.org/files/2017/08/11-500x184.png 500w, https://hacks.mozilla.org/files/2017/08/11-250x92.png 250w, https://hacks.mozilla.org/files/2017/08/11-768x283.png 768w" sizes="(max-width: 500px) 100vw, 500px"></a></p>
+<p>This ends up saving both memory and time. Nodes that have similar properties (like siblings) can just point to the same structs for the properties they share. And because many properties are inherited, an ancestor can share a struct with any descendants that don’t specify their own overrides.</p>
+<h3>Now, how do we make that fast?</h3>
+<p>So that is what style computation looks like when you haven’t optimized it.</p>
+<p><a href="https://hacks.mozilla.org/files/2017/08/12.png"><img decoding="async" loading="lazy" class="alignnone size-large wp-image-31191" src="./Inside a super fast CSS engine_ Quantum CSS (aka Stylo) - Mozilla Hacks - the Web developer blog_files/12-500x219.png" alt="Steps in CSS style computation: selector matching, sorting by specificity, and computing property values" width="500" height="219" srcset="https://hacks.mozilla.org/files/2017/08/12-500x219.png 500w, https://hacks.mozilla.org/files/2017/08/12-250x110.png 250w, https://hacks.mozilla.org/files/2017/08/12-768x337.png 768w" sizes="(max-width: 500px) 100vw, 500px"></a></p>
+<p>There’s a lot of work happening here. And it doesn’t just need to happen on the first page load. It happens over and over again as users interact with the page, hovering over elements or making changes to the DOM, triggering a restyle.</p>
+<p><a href="https://hacks.mozilla.org/files/2017/08/13.png"><img decoding="async" loading="lazy" class="alignnone size-large wp-image-31192" src="./Inside a super fast CSS engine_ Quantum CSS (aka Stylo) - Mozilla Hacks - the Web developer blog_files/13-500x116.png" alt="Initial styling plus restyling for hover, DOM nodes added, etc" width="500" height="116" srcset="https://hacks.mozilla.org/files/2017/08/13-500x116.png 500w, https://hacks.mozilla.org/files/2017/08/13-250x58.png 250w, https://hacks.mozilla.org/files/2017/08/13-768x179.png 768w" sizes="(max-width: 500px) 100vw, 500px"></a></p>
+<p>This means that CSS style computation is a great candidate for optimization… and browsers have been testing out different strategies to optimize it for the past 20 years. What Quantum CSS does is take the best of these strategies from different engines and combine them to create a superfast new engine.</p>
+<p>So let’s look at the details of how these all work together.</p>
+<h4 id="parallel">Run it all in parallel</h4>
+<p>The Servo project (which Quantum CSS comes from) is an experimental browser that’s trying to parallelize all of the different parts of rendering a web page. What does that mean?</p>
+<p>A computer is like a brain. There’s a part that does the thinking (the ALU). Near that, there’s some short term memory (the registers). These are grouped together on the CPU. Then there’s longer term memory, which is RAM.</p>
+<p><a href="https://hacks.mozilla.org/files/2017/08/14.png"><img decoding="async" loading="lazy" class="alignnone size-large wp-image-31193" src="./Inside a super fast CSS engine_ Quantum CSS (aka Stylo) - Mozilla Hacks - the Web developer blog_files/14-500x332.png" alt="CPU with ALU (the part that does the thinking) and registers (short term memory)" width="500" height="332" srcset="https://hacks.mozilla.org/files/2017/08/14-500x332.png 500w, https://hacks.mozilla.org/files/2017/08/14-250x166.png 250w, https://hacks.mozilla.org/files/2017/08/14-768x510.png 768w" sizes="(max-width: 500px) 100vw, 500px"></a></p>
+<p>Early computers could only think one thing at a time using this CPU. But over the last decade, CPUs have shifted to having multiple ALUs and registers, grouped together in cores. This means that the CPU can think multiple things at once — in parallel.</p>
+<p><a href="https://hacks.mozilla.org/files/2017/08/15.png"><img decoding="async" loading="lazy" class="alignnone size-large wp-image-31194" src="./Inside a super fast CSS engine_ Quantum CSS (aka Stylo) - Mozilla Hacks - the Web developer blog_files/15-500x243.png" alt="CPU chip with multiple cores containing ALUs and registers" width="500" height="243" srcset="https://hacks.mozilla.org/files/2017/08/15-500x243.png 500w, https://hacks.mozilla.org/files/2017/08/15-250x121.png 250w, https://hacks.mozilla.org/files/2017/08/15-768x373.png 768w" sizes="(max-width: 500px) 100vw, 500px"></a></p>
+<p>Quantum CSS makes use of this recent feature of computers by splitting up style computation for the different DOM nodes across the different cores.</p>
+<p>This might seem like an easy thing to do… just split up the branches of the tree and do them on different cores. It’s actually much harder than that for a few reasons. One reason is that DOM trees are often uneven. That means that one core will have a lot more work to do than others.</p>
+<p><a href="https://hacks.mozilla.org/files/2017/08/16.png"><img decoding="async" loading="lazy" class="alignnone size-large wp-image-31195" src="./Inside a super fast CSS engine_ Quantum CSS (aka Stylo) - Mozilla Hacks - the Web developer blog_files/16-500x530.png" alt="Imbalanced DOM tree being split between multiple cores so one does all the work" width="500" height="530" srcset="https://hacks.mozilla.org/files/2017/08/16-500x530.png 500w, https://hacks.mozilla.org/files/2017/08/16-250x265.png 250w, https://hacks.mozilla.org/files/2017/08/16-768x815.png 768w" sizes="(max-width: 500px) 100vw, 500px"></a></p>
+<p><span id="work-stealing"></span><br>
+To balance the work more evenly, Quantum CSS uses a technique called work stealing. When a DOM node is being processed, the code takes its direct children and splits them up into 1 or more “work units”. These work units get put into a queue.</p>
+<p><a href="https://hacks.mozilla.org/files/2017/08/17.png"><img decoding="async" loading="lazy" class="alignnone size-large wp-image-31196" src="./Inside a super fast CSS engine_ Quantum CSS (aka Stylo) - Mozilla Hacks - the Web developer blog_files/17-500x362.png" alt="Cores segmenting their work into work units" width="500" height="362" srcset="https://hacks.mozilla.org/files/2017/08/17-500x362.png 500w, https://hacks.mozilla.org/files/2017/08/17-250x181.png 250w, https://hacks.mozilla.org/files/2017/08/17-768x555.png 768w" sizes="(max-width: 500px) 100vw, 500px"></a></p>
+<p>When one core is done with the work in its queue, it can look in the other queues to find more work to do.&nbsp;This means we can evenly divide the work without taking time up front to walk the tree and figure out how to balance it ahead of time.</p>
+<p><a href="https://hacks.mozilla.org/files/2017/08/18.png"><img decoding="async" loading="lazy" class="alignnone size-large wp-image-31197" src="./Inside a super fast CSS engine_ Quantum CSS (aka Stylo) - Mozilla Hacks - the Web developer blog_files/18-500x356.png" alt="Cores that have finished their work stealing from the core with more work" width="500" height="356" srcset="https://hacks.mozilla.org/files/2017/08/18-500x356.png 500w, https://hacks.mozilla.org/files/2017/08/18-250x178.png 250w, https://hacks.mozilla.org/files/2017/08/18-768x547.png 768w" sizes="(max-width: 500px) 100vw, 500px"></a></p>
+<p>In most browsers, it would be hard to get this right. Parallelism is a known hard problem, and the CSS engine is very complex. It’s also sitting between the two other most complex parts of the rendering engine — the DOM and layout. So it would be easy to introduce a bug, and parallelism can result in bugs that are very hard to track down, called data races. I explain more about these kinds of bugs in <a href="https://hacks.mozilla.org/2017/06/avoiding-race-conditions-in-sharedarraybuffers-with-atomics/#data-race">another article</a>.</p>
+<p>If you’re accepting contributions from hundreds or thousands of engineers, how can you program in parallel without fear? That’s what we have Rust for.</p>
+<p><a href="https://hacks.mozilla.org/files/2017/08/19.png"><img decoding="async" loading="lazy" class="alignnone size-large wp-image-31198" src="./Inside a super fast CSS engine_ Quantum CSS (aka Stylo) - Mozilla Hacks - the Web developer blog_files/19-500x221.png" alt="Rust logo" width="500" height="221" srcset="https://hacks.mozilla.org/files/2017/08/19-500x221.png 500w, https://hacks.mozilla.org/files/2017/08/19-250x111.png 250w, https://hacks.mozilla.org/files/2017/08/19-768x340.png 768w" sizes="(max-width: 500px) 100vw, 500px"></a></p>
+<p>With Rust, you can statically verify that you don’t have data races. This means you avoid tricky-to-debug bugs by just not letting them into your code in the first place. The compiler won’t let you do it. I’ll be writing more about this in a future article. In the meantime, you can watch this <a href="https://www.youtube.com/watch?v=cNeIOt8ZdAY" target="_blank">intro video about parallelism in Rust</a> or this <a href="https://www.youtube.com/watch?v=gof_OEv71Aw" target="_blank">more in-depth talk about work stealing</a>.</p>
+<p>With this, CSS style computation becomes what’s called an embarrassingly parallel problem — there’s very little keeping you from running it efficiently in parallel. This means that we can get close to linear speed ups. If you have 4 cores on your machine, then it will run close to 4 times faster.</p>
+<h4>Speed up restyles with the Rule Tree</h4>
+<p>For each DOM node, the CSS engine needs to go through all of the rules to do selector matching. For most nodes, this matching likely won’t change very often. For example, if the user hovers over a parent, the rules that match it may change. We still need to recompute style for its descendants to handle property inheritance, but the rules that match those descendants probably won’t change.</p>
+<p>It would be nice if we could just make a note of which rules match those descendants so we don’t have to do selector matching for them again… and that’s what the rule tree—borrowed from Firefox’s previous CSS engine— does.</p>
+<p>The CSS engine will go through the process of figuring out the selectors that match, and then sorting them by specificity. From this, it creates a linked list of rules.</p>
+<p>This list is going to be added to the tree.</p>
+<p><a href="https://hacks.mozilla.org/files/2017/08/20.png"><img decoding="async" loading="lazy" class="alignnone size-large wp-image-31199" src="./Inside a super fast CSS engine_ Quantum CSS (aka Stylo) - Mozilla Hacks - the Web developer blog_files/20-500x189.png" alt="A linked list of rules being added to the rule tree" width="500" height="189" srcset="https://hacks.mozilla.org/files/2017/08/20-500x189.png 500w, https://hacks.mozilla.org/files/2017/08/20-250x95.png 250w, https://hacks.mozilla.org/files/2017/08/20-768x291.png 768w" sizes="(max-width: 500px) 100vw, 500px"></a></p>
+<p>The CSS engine tries to keep the number of branches in the tree to a minimum. To do this, it will try to reuse a branch wherever it can.</p>
+<p>If most of the selectors in the list are the same as an existing branch, then it will follow the same path. But it might reach a point where the next rule in the list isn’t in this branch of the tree. Only at that point will it add a new branch.</p>
+<p><a href="https://hacks.mozilla.org/files/2017/08/21.png"><img decoding="async" loading="lazy" class="alignnone size-large wp-image-31200" src="./Inside a super fast CSS engine_ Quantum CSS (aka Stylo) - Mozilla Hacks - the Web developer blog_files/21-500x298.png" alt="The last item in the linked list being added to the tree" width="500" height="298" srcset="https://hacks.mozilla.org/files/2017/08/21-500x298.png 500w, https://hacks.mozilla.org/files/2017/08/21-250x149.png 250w, https://hacks.mozilla.org/files/2017/08/21-768x457.png 768w" sizes="(max-width: 500px) 100vw, 500px"></a></p>
+<p>The DOM node will get a pointer to the rule that was inserted last (in this example, the <code>div#warning</code> rule). This is the most specific one.</p>
+<p>On restyle, the engine does a quick check to see whether the change to the parent could potentially change the rules that match children. If not, then for any descendants, the engine can just follow the pointer on the descendant node to get to that rule. From there, it can follow the tree back up to the root to get the full list of matching rules, from most specific to least specific. This means it can skip selector matching and sorting completely.</p>
+<p><a href="https://hacks.mozilla.org/files/2017/08/22.png"><img decoding="async" loading="lazy" class="alignnone size-large wp-image-31201" src="./Inside a super fast CSS engine_ Quantum CSS (aka Stylo) - Mozilla Hacks - the Web developer blog_files/22-500x174.png" alt="Skipping selector matching and sorting by specificity" width="500" height="174" srcset="https://hacks.mozilla.org/files/2017/08/22-500x174.png 500w, https://hacks.mozilla.org/files/2017/08/22-250x87.png 250w, https://hacks.mozilla.org/files/2017/08/22-768x267.png 768w" sizes="(max-width: 500px) 100vw, 500px"></a></p>
+<p>So this helps reduce the work needed during restyle. But it’s still a lot of work during initial styling. If you have 10,000 nodes, you still need to do selector matching 10,000 times. But there’s another way to speed that up.</p>
+<h4>Speed up initial render (and the cascade) with the style sharing cache</h4>
+<p>Think about a page with thousands of nodes. Many of those nodes will match the same rules. For example, think of a long Wikipedia page… the paragraphs in the main content area should all end up matching the exact same rules, and have the exact same computed styles.</p>
+<p>If there’s no optimization, then the CSS engine has to match selectors and compute styles for each paragraph individually. But if there was a way to prove that the styles will be the same from paragraph to paragraph, then the engine could just do that work once and point each paragraph node to the same computed style.</p>
+<p>That’s what the style sharing cache—inspired by Safari and Chrome—does. After it’s done processing a node, it puts the computed style into the cache. Then, before it starts computing styles on the next node, it runs a few checks to see whether it can use something from the cache.</p>
+<p>Those checks are:</p>
+<ul>
+<li>Do the 2 nodes have the same ids, classes, etc? If so, then they would match the same rules.</li>
+<li>For anything that isn’t selector based—inline styles, for example—do the nodes have the same values? If so, then the rules from above either won’t be overridden, or will be overridden in the same way.</li>
+<li>Do both parents point to the same computed style object? If so, then the inherited values will also be the same.</li>
+</ul>
+<p><a href="https://hacks.mozilla.org/files/2017/08/23.png"><img decoding="async" loading="lazy" class="alignnone size-large wp-image-31202" src="./Inside a super fast CSS engine_ Quantum CSS (aka Stylo) - Mozilla Hacks - the Web developer blog_files/23-500x505.png" alt="Computed styles being shared by all siblings, and then asking the question of whether a cousin can share. Answer: yes" width="500" height="505" srcset="https://hacks.mozilla.org/files/2017/08/23-500x505.png 500w, https://hacks.mozilla.org/files/2017/08/23-250x253.png 250w, https://hacks.mozilla.org/files/2017/08/23-768x776.png 768w, https://hacks.mozilla.org/files/2017/08/23-32x32.png 32w, https://hacks.mozilla.org/files/2017/08/23-50x50.png 50w, https://hacks.mozilla.org/files/2017/08/23-64x64.png 64w, https://hacks.mozilla.org/files/2017/08/23-96x96.png 96w, https://hacks.mozilla.org/files/2017/08/23-128x128.png 128w" sizes="(max-width: 500px) 100vw, 500px"></a></p>
+<p>Those checks have been in earlier style sharing caches since the beginning. But there are a lot of other little cases where styles might not match. For example, if a CSS rule uses the <code>:first-child</code> selector, then two paragraphs might not match, even though the checks above suggest that they should.</p>
+<p>In WebKit and Blink, the style sharing cache would give up in these cases and not use the cache. As more sites use these modern selectors, the optimization was becoming less and less useful, so the Blink team recently removed it. But it turns out there is a way for the style sharing cache to keep up with these changes.</p>
+<p>In Quantum CSS, we gather up all of those weird selectors and check whether they apply to the DOM node. Then we store the answers as ones and zeros. If the two elements have the same ones and zeros, we know they definitely match.</p>
+<p><a href="https://hacks.mozilla.org/files/2017/08/24.png"><img decoding="async" loading="lazy" class="alignnone size-large wp-image-31203" src="./Inside a super fast CSS engine_ Quantum CSS (aka Stylo) - Mozilla Hacks - the Web developer blog_files/24-500x195.png" alt="A scoreboard showing 0s and 1s, with the columns labeled with selectors like :first-child" width="500" height="195" srcset="https://hacks.mozilla.org/files/2017/08/24-500x195.png 500w, https://hacks.mozilla.org/files/2017/08/24-250x97.png 250w, https://hacks.mozilla.org/files/2017/08/24-768x299.png 768w" sizes="(max-width: 500px) 100vw, 500px"></a></p>
+<p>If a DOM node can share styles that have already been computed, you can skip pretty much all of the work. Because pages often have many DOM nodes with the same styles, this style sharing cache can save on memory and also really speed things up.</p>
+<p><a href="https://hacks.mozilla.org/files/2017/08/25.png"><img decoding="async" loading="lazy" class="alignnone size-large wp-image-31204" src="./Inside a super fast CSS engine_ Quantum CSS (aka Stylo) - Mozilla Hacks - the Web developer blog_files/25-500x166.png" alt="Skipping all of the work" width="500" height="166" srcset="https://hacks.mozilla.org/files/2017/08/25-500x166.png 500w, https://hacks.mozilla.org/files/2017/08/25-250x83.png 250w, https://hacks.mozilla.org/files/2017/08/25-768x256.png 768w" sizes="(max-width: 500px) 100vw, 500px"></a></p>
+<h3>Conclusion</h3>
+<p>This is the first big technology transfer of Servo tech to Firefox. Along the way, we’ve learned a lot about how to bring modern, high-performance code written in Rust into the core of Firefox.</p>
+<p>We’re very excited to have this big chunk of Project Quantum ready for users to experience first-hand. We’d be happy to have you try it out, and let us know if you <a href="https://bugzilla.mozilla.org/enter_bug.cgi?assigned_to=nobody%40mozilla.org&amp;bug_file_loc=http%3A%2F%2F&amp;bug_ignored=0&amp;bug_severity=normal&amp;bug_status=NEW&amp;cf_fx_iteration=---&amp;cf_fx_points=---&amp;component=CSS%20Parsing%20and%20Computation&amp;contenttypemethod=autodetect&amp;contenttypeselection=text%2Fplain&amp;defined_groups=1&amp;flag_type-203=X&amp;flag_type-37=X&amp;flag_type-4=X&amp;flag_type-41=X&amp;flag_type-5=X&amp;flag_type-607=X&amp;flag_type-721=X&amp;flag_type-737=X&amp;flag_type-781=X&amp;flag_type-787=X&amp;flag_type-799=X&amp;flag_type-800=X&amp;flag_type-803=X&amp;flag_type-835=X&amp;flag_type-846=X&amp;flag_type-855=X&amp;flag_type-863=X&amp;flag_type-864=X&amp;flag_type-914=X&amp;flag_type-916=X&amp;form_name=enter_bug&amp;keywords=nightly-community%2C%20&amp;maketemplate=Remember%20values%20as%20bookmarkable%20template&amp;op_sys=Unspecified&amp;priority=--&amp;product=Core&amp;rep_platform=Unspecified&amp;short_desc=Stylo%3A%20&amp;target_milestone=---&amp;version=Trunk" target="_blank">find any issues</a>.</p>
+    <section class="about">
+                                <h2 class="about__header">About
+                          <a class="url" href="https://twitter.com/linclark" rel="external me" target="_blank">
+                Lin Clark              </a>
+                      </h2>
+                      <p>Lin works in Advanced Development at Mozilla, with a focus on Rust and WebAssembly.</p>
+                    <ul class="author-meta fa-ul"><li><i class="fa-li fa fa-globe"></i><a href="https://twitter.com/linclark" class="website" rel="me" target="_blank">https://twitter.com/linclark</a></li><li><i class="fa-li fa fa-twitter"></i><a href="http://twitter.com/linclark" class="twitter" rel="me" target="_blank">@linclark</a></li></ul>            <p><a class="url" href="https://hacks.mozilla.org/author/lclarkmozilla-com/">More articles by Lin Clark…</a></p>
+                  </section>
+  </article>
+  <section class="promo">
+    <form id="newsletterForm" name="newsletter-form" class="newsletter block block--1 block--polite" action="https://www.mozilla.org/en-US/newsletter/" method="post">
+  <h2 class="heading">Discover great resources for web development</h2>
+  <p class="newsletter__description">Sign up for the Mozilla Developer Newsletter:</p>
+  <input id="fmt" name="fmt" value="H" type="hidden">
+  <input id="newsletterNewslettersInput" name="newsletters" value="app-dev" type="hidden">
+
+  <div id="newsletterErrors" class="newsletter__errors"></div>
+
+  <div id="newsletterEmail" class="form__row">
+    <label for="newsletterEmailInput" class="offscreen">E-mail</label>
+    <input id="newsletterEmailInput" name="email" class="newsletter__input" required="" placeholder="you@example.com" size="30" type="email">
+  </div>
+
+  <div id="newsletterPrivacy" class="form__row form__fineprint">
+    <input id="newsletterPrivacyInput" name="privacy" required="" type="checkbox">
+    <label for="newsletterPrivacyInput">
+      I'm okay with Mozilla handling my info as explained in this <a href="https://www.mozilla.org/privacy/" target="_blank">Privacy Policy</a>.
+    </label>
+  </div>
+  <button id="newsletter-submit" type="submit" class="button positive">Sign up now</button>
+</form>
+<div id="newsletterThanks" class="newsletter newsletter--thanks block block--1 block--polite hidden">
+  <h2 class="heading">Thanks! Please check your inbox to confirm your subscription.</h2>
+  <p>If you haven’t previously confirmed a subscription to a Mozilla-related newsletter you may have to do so. Please check your inbox or your spam filter for an email from us.
+  </p>
+</div>
+  </section>
+  
+
+<section class="discussion">
+  <hr class="dino">
+  <div class="comments">
+    <header class="comments__head">
+      <h3>52 comments</h3>
+    </header>
+
+          <ol class="comments__list">
+      
+ <li id="comment-21591" class="comment even thread-even depth-1">
+      <b class="comment__title vcard">
+      <cite class="author fn">Ulrich</cite>
+    </b>
+  
+    
+    <blockquote class="comment__body">
+      <p>Wow, awesome work (and great writeup!).</p>
+<p>As you could say in NuGerman: Stylo – Geilo!</p>
+    </blockquote>
+
+    <a class="comment__meta" href="https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/#comment-21591" rel="bookmark" title="Permanent link to this comment by Ulrich"><abbr class="published" title="2017-08-22">August 22nd, 2017</abbr> at 08:58</a>
+
+      <p class="comment__util"> </p>
+  <ol class="children">
+
+ <li id="comment-21725" class="comment odd alt depth-2">
+      <b class="comment__title vcard">
+      <cite class="author fn">RustWebAssemblyPickles</cite>
+    </b>
+  
+    
+    <blockquote class="comment__body">
+      <p>What is a NuGerman? Google is empty.</p>
+    </blockquote>
+
+    <a class="comment__meta" href="https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/#comment-21725" rel="bookmark" title="Permanent link to this comment by RustWebAssemblyPickles"><abbr class="published" title="2017-09-14">September 14th, 2017</abbr> at 07:04</a>
+
+      <p class="comment__util"> </p>
+  </li><!-- #comment-## -->
+</ol><!-- .children -->
+</li><!-- #comment-## -->
+
+ <li id="comment-21592" class="comment even thread-odd thread-alt depth-1">
+      <b class="comment__title vcard">
+      <cite class="author fn">Eddy Young</cite>
+    </b>
+  
+    
+    <blockquote class="comment__body">
+      <p>Excellent write-up. Very educational.</p>
+    </blockquote>
+
+    <a class="comment__meta" href="https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/#comment-21592" rel="bookmark" title="Permanent link to this comment by Eddy Young"><abbr class="published" title="2017-08-22">August 22nd, 2017</abbr> at 09:17</a>
+
+      <p class="comment__util"> </p>
+  </li><!-- #comment-## -->
+
+ <li id="comment-21593" class="comment odd alt thread-even depth-1">
+      <b class="comment__title vcard">
+      <cite class="author fn">jxn</cite>
+    </b>
+  
+    
+    <blockquote class="comment__body">
+      <p>Thanks for the detailed write-up.  I’m curious about the style-sharing cache, though.  I see you credited Chrome/Safari with the Style-Sharing Cache in Quantum.  I thought that Blink had removed the style-sharing cache.  Any idea why it was removed, and why it was a better candidate for Firefox than Servo’s style sharing cache?</p>
+    </blockquote>
+
+    <a class="comment__meta" href="https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/#comment-21593" rel="bookmark" title="Permanent link to this comment by jxn"><abbr class="published" title="2017-08-22">August 22nd, 2017</abbr> at 09:37</a>
+
+      <p class="comment__util"> </p>
+  <ol class="children">
+
+ <li id="comment-21594" class="comment byuser comment-author-lclarkmozilla-com bypostauthor even depth-2">
+      <b class="comment__title vcard">
+      <cite class="author fn">Lin Clark</cite>
+    </b>
+  
+    
+    <blockquote class="comment__body">
+      <p>Yes, that’s correct. I go into this in the article.</p>
+<blockquote><p>As more sites use these modern selectors, the optimization was becoming less and less useful, so the Blink team recently removed it. But it turns out there is a way for the style sharing cache to keep up with these changes.</p></blockquote>
+<p>It’s not that Blink/WebKit’s style sharing cache was better for Firefox than Servo’s. The style sharing cache in Servo was inspired by Blink/WebKit, and Firefox and Servo share Stylo.</p>
+    </blockquote>
+
+    <a class="comment__meta" href="https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/#comment-21594" rel="bookmark" title="Permanent link to this comment by Lin Clark"><abbr class="published" title="2017-08-22">August 22nd, 2017</abbr> at 09:50</a>
+
+      <p class="comment__util"> </p>
+  <ol class="children">
+
+ <li id="comment-21595" class="comment odd alt depth-3">
+      <b class="comment__title vcard">
+      <cite class="author fn">jxn</cite>
+    </b>
+  
+    
+    <blockquote class="comment__body">
+      <p>Sorry, I didn’t read closely enough.  You did answer perfectly.  Thanks!</p>
+    </blockquote>
+
+    <a class="comment__meta" href="https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/#comment-21595" rel="bookmark" title="Permanent link to this comment by jxn"><abbr class="published" title="2017-08-22">August 22nd, 2017</abbr> at 09:51</a>
+
+      <p class="comment__util"> </p>
+  </li><!-- #comment-## -->
+</ol><!-- .children -->
+</li><!-- #comment-## -->
+</ol><!-- .children -->
+</li><!-- #comment-## -->
+
+ <li id="comment-21596" class="comment even thread-odd thread-alt depth-1">
+      <b class="comment__title vcard">
+      <cite class="author fn">Ivan</cite>
+    </b>
+  
+    
+    <blockquote class="comment__body">
+      <p>Very nice and informative work.</p>
+<p>Please, keep it writing about the others quantum components…</p>
+    </blockquote>
+
+    <a class="comment__meta" href="https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/#comment-21596" rel="bookmark" title="Permanent link to this comment by Ivan"><abbr class="published" title="2017-08-22">August 22nd, 2017</abbr> at 09:54</a>
+
+      <p class="comment__util"> </p>
+  </li><!-- #comment-## -->
+
+ <li id="comment-21597" class="comment odd alt thread-even depth-1">
+      <b class="comment__title vcard">
+      <cite class="author fn">Royi</cite>
+    </b>
+  
+    
+    <blockquote class="comment__body">
+      <p>Great writing.<br>
+I like the new spirit in Mozilla.</p>
+<p>I started using Firefox since version 55.<br>
+It is much better.</p>
+<p>I really hope you’ll make it leaner in resources.<br>
+If you give 90% of performance with 50% of resources you will win the crowd.</p>
+<p>By the way, when you say “… it would still be one fast CSS engine …”, well there are only 4 (Edge, Chrome, Safari, Firefox).</p>
+    </blockquote>
+
+    <a class="comment__meta" href="https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/#comment-21597" rel="bookmark" title="Permanent link to this comment by Royi"><abbr class="published" title="2017-08-22">August 22nd, 2017</abbr> at 09:56</a>
+
+      <p class="comment__util"> </p>
+  </li><!-- #comment-## -->
+
+ <li id="comment-21598" class="comment even thread-odd thread-alt depth-1">
+      <b class="comment__title vcard">
+      <cite class="author fn">Wes</cite>
+    </b>
+  
+    
+    <blockquote class="comment__body">
+      <p>Great writeup. Just curious, you have any stats from nightly users on speedups they’re seeing?</p>
+    </blockquote>
+
+    <a class="comment__meta" href="https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/#comment-21598" rel="bookmark" title="Permanent link to this comment by Wes"><abbr class="published" title="2017-08-22">August 22nd, 2017</abbr> at 10:52</a>
+
+      <p class="comment__util"> </p>
+  <ol class="children">
+
+ <li id="comment-21603" class="comment odd alt depth-2">
+      <b class="comment__title vcard">
+      <cite class="author fn">Kon</cite>
+    </b>
+  
+    
+    <blockquote class="comment__body">
+      <p>i don’t know about the stats but it surely feels different, try it out and see :)</p>
+    </blockquote>
+
+    <a class="comment__meta" href="https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/#comment-21603" rel="bookmark" title="Permanent link to this comment by Kon"><abbr class="published" title="2017-08-22">August 22nd, 2017</abbr> at 13:04</a>
+
+      <p class="comment__util"> </p>
+  </li><!-- #comment-## -->
+</ol><!-- .children -->
+</li><!-- #comment-## -->
+
+ <li id="comment-21599" class="comment even thread-even depth-1">
+      <b class="comment__title vcard">
+      <cite class="author fn">anarcode</cite>
+    </b>
+  
+    
+    <blockquote class="comment__body">
+      <p>I’ve been following Rust and Servo for years and I was getting discouraged at the slow pace but I understood the complexity and potential performance gains that could propel Firefox to a whole new class of performance so I hung in there and continued to promote Firefox. This merge has renewed my excitement! Congratulations to all contributors and thank you for this remarkable contribution.</p>
+    </blockquote>
+
+    <a class="comment__meta" href="https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/#comment-21599" rel="bookmark" title="Permanent link to this comment by anarcode"><abbr class="published" title="2017-08-22">August 22nd, 2017</abbr> at 10:56</a>
+
+      <p class="comment__util"> </p>
+  <ol class="children">
+
+ <li id="comment-21672" class="comment odd alt depth-2">
+      <b class="comment__title vcard">
+      <cite class="author fn">Chris Wong</cite>
+    </b>
+  
+    
+    <blockquote class="comment__body">
+      <p>Slow!?</p>
+<p>Given that they’re rewriting a whole browser engine from the ground up, including the programming language that it’s based on… I’d say that they’ve been working at a breakneck pace :)</p>
+    </blockquote>
+
+    <a class="comment__meta" href="https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/#comment-21672" rel="bookmark" title="Permanent link to this comment by Chris Wong"><abbr class="published" title="2017-08-31">August 31st, 2017</abbr> at 04:20</a>
+
+      <p class="comment__util"> </p>
+  </li><!-- #comment-## -->
+</ol><!-- .children -->
+</li><!-- #comment-## -->
+
+ <li id="comment-21600" class="comment even thread-odd thread-alt depth-1">
+      <b class="comment__title vcard">
+      <cite class="author fn">Firefox user</cite>
+    </b>
+  
+    
+    <blockquote class="comment__body">
+      <p>Great article, and looking forward to see this on Firefox! But one nitpick though – you said “We’re swapping in parts from our experimental browser, Servo”. But it would cause less confusion if it was explicitly called as browser engine (as servo.org says and servo project being titled “the parallel browser engine”).</p>
+    </blockquote>
+
+    <a class="comment__meta" href="https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/#comment-21600" rel="bookmark" title="Permanent link to this comment by Firefox user"><abbr class="published" title="2017-08-22">August 22nd, 2017</abbr> at 11:04</a>
+
+      <p class="comment__util"> </p>
+  </li><!-- #comment-## -->
+
+ <li id="comment-21601" class="comment odd alt thread-even depth-1">
+      <b class="comment__title vcard">
+      <cite class="author fn">Narek</cite>
+    </b>
+  
+    
+    <blockquote class="comment__body">
+      <p>Great write up and great cartoons :) Excited about the future of FF.</p>
+    </blockquote>
+
+    <a class="comment__meta" href="https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/#comment-21601" rel="bookmark" title="Permanent link to this comment by Narek"><abbr class="published" title="2017-08-22">August 22nd, 2017</abbr> at 11:30</a>
+
+      <p class="comment__util"> </p>
+  </li><!-- #comment-## -->
+
+ <li id="comment-21602" class="comment even thread-odd thread-alt depth-1">
+      <b class="comment__title vcard">
+      <cite class="author fn">David Naylor</cite>
+    </b>
+  
+    
+    <blockquote class="comment__body">
+      <p>Impressed by all the hard work behind this article! So many illustrations!</p>
+    </blockquote>
+
+    <a class="comment__meta" href="https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/#comment-21602" rel="bookmark" title="Permanent link to this comment by David Naylor"><abbr class="published" title="2017-08-22">August 22nd, 2017</abbr> at 12:33</a>
+
+      <p class="comment__util"> </p>
+  </li><!-- #comment-## -->
+
+ <li id="comment-21606" class="comment odd alt thread-even depth-1">
+      <b class="comment__title vcard">
+      <cite class="author fn">Petar</cite>
+    </b>
+  
+    
+    <blockquote class="comment__body">
+      <p>Great read!</p>
+    </blockquote>
+
+    <a class="comment__meta" href="https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/#comment-21606" rel="bookmark" title="Permanent link to this comment by Petar"><abbr class="published" title="2017-08-22">August 22nd, 2017</abbr> at 13:28</a>
+
+      <p class="comment__util"> </p>
+  </li><!-- #comment-## -->
+
+ <li id="comment-21607" class="comment even thread-odd thread-alt depth-1">
+      <b class="comment__title vcard">
+      <cite class="author fn">Nigga</cite>
+    </b>
+  
+    
+    <blockquote class="comment__body">
+      <p>Nice stuff, keep up with the good work</p>
+    </blockquote>
+
+    <a class="comment__meta" href="https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/#comment-21607" rel="bookmark" title="Permanent link to this comment by Nigga"><abbr class="published" title="2017-08-22">August 22nd, 2017</abbr> at 15:09</a>
+
+      <p class="comment__util"> </p>
+  </li><!-- #comment-## -->
+
+ <li id="comment-21608" class="comment odd alt thread-even depth-1">
+      <b class="comment__title vcard">
+      <cite class="author fn">David Ortner</cite>
+    </b>
+  
+    
+    <blockquote class="comment__body">
+      <p>Great article. I am excited to try out the new changes in Firefox. Maybe it is time to go back to Firefox from Chrome now.</p>
+    </blockquote>
+
+    <a class="comment__meta" href="https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/#comment-21608" rel="bookmark" title="Permanent link to this comment by David Ortner"><abbr class="published" title="2017-08-22">August 22nd, 2017</abbr> at 15:31</a>
+
+      <p class="comment__util"> </p>
+  </li><!-- #comment-## -->
+
+ <li id="comment-21609" class="comment even thread-odd thread-alt depth-1">
+      <b class="comment__title vcard">
+      <cite class="author fn">Wejick</cite>
+    </b>
+  
+    
+    <blockquote class="comment__body">
+      <p>Nice writing, thanks for breaking down the pieces into easy to swallow chunks.</p>
+    </blockquote>
+
+    <a class="comment__meta" href="https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/#comment-21609" rel="bookmark" title="Permanent link to this comment by Wejick"><abbr class="published" title="2017-08-22">August 22nd, 2017</abbr> at 18:27</a>
+
+      <p class="comment__util"> </p>
+  </li><!-- #comment-## -->
+
+ <li id="comment-21610" class="comment odd alt thread-even depth-1">
+      <b class="comment__title vcard">
+      <cite class="author fn">Dinesh</cite>
+    </b>
+  
+    
+    <blockquote class="comment__body">
+      <p>Thanks for the most comprehensive article. I understood better of the inner workings of a browser. I’ll uninstall chrome and install firefox.</p>
+    </blockquote>
+
+    <a class="comment__meta" href="https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/#comment-21610" rel="bookmark" title="Permanent link to this comment by Dinesh"><abbr class="published" title="2017-08-22">August 22nd, 2017</abbr> at 21:16</a>
+
+      <p class="comment__util"> </p>
+  </li><!-- #comment-## -->
+
+ <li id="comment-21611" class="comment even thread-odd thread-alt depth-1">
+      <b class="comment__title vcard">
+      <cite class="author fn">Ali</cite>
+    </b>
+  
+    
+    <blockquote class="comment__body">
+      <p>This post should came from university. Amazing.</p>
+    </blockquote>
+
+    <a class="comment__meta" href="https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/#comment-21611" rel="bookmark" title="Permanent link to this comment by Ali"><abbr class="published" title="2017-08-22">August 22nd, 2017</abbr> at 22:24</a>
+
+      <p class="comment__util"> </p>
+  </li><!-- #comment-## -->
+
+ <li id="comment-21612" class="comment odd alt thread-even depth-1">
+      <b class="comment__title vcard">
+      <cite class="author fn">Jonathan</cite>
+    </b>
+  
+    
+    <blockquote class="comment__body">
+      <p>Hey Lin,</p>
+<p>Awesome article, brilliant explanations.</p>
+    </blockquote>
+
+    <a class="comment__meta" href="https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/#comment-21612" rel="bookmark" title="Permanent link to this comment by Jonathan"><abbr class="published" title="2017-08-22">August 22nd, 2017</abbr> at 23:42</a>
+
+      <p class="comment__util"> </p>
+  </li><!-- #comment-## -->
+
+ <li id="comment-21616" class="comment even thread-odd thread-alt depth-1">
+      <b class="comment__title vcard">
+      <cite class="author fn">Álvaro González</cite>
+    </b>
+  
+    
+    <blockquote class="comment__body">
+      <p>Will all these improvements eventually land on Android version or it’s an entirely different architecture?</p>
+    </blockquote>
+
+    <a class="comment__meta" href="https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/#comment-21616" rel="bookmark" title="Permanent link to this comment by Álvaro González"><abbr class="published" title="2017-08-23">August 23rd, 2017</abbr> at 01:36</a>
+
+      <p class="comment__util"> </p>
+  <ol class="children">
+
+ <li id="comment-21617" class="comment byuser comment-author-lclarkmozilla-com bypostauthor odd alt depth-2">
+      <b class="comment__title vcard">
+      <cite class="author fn">Lin Clark</cite>
+    </b>
+  
+    
+    <blockquote class="comment__body">
+      <p>There was a little <a href="https://news.ycombinator.com/item?id=15075126" rel="nofollow" target="_blank">discussion about this</a> on the Hacker News thread. There is an issue tracking support.</p>
+    </blockquote>
+
+    <a class="comment__meta" href="https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/#comment-21617" rel="bookmark" title="Permanent link to this comment by Lin Clark"><abbr class="published" title="2017-08-23">August 23rd, 2017</abbr> at 05:09</a>
+
+      <p class="comment__util"> </p>
+  </li><!-- #comment-## -->
+</ol><!-- .children -->
+</li><!-- #comment-## -->
+
+ <li id="comment-21618" class="comment even thread-even depth-1">
+      <b class="comment__title vcard">
+      <cite class="author fn">Jana Micaela</cite>
+    </b>
+  
+    
+    <blockquote class="comment__body">
+      <p>Glad to have found blog! Articles like this make engineering fun and exciting to dive into. Looking forward to your future posts :)</p>
+    </blockquote>
+
+    <a class="comment__meta" href="https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/#comment-21618" rel="bookmark" title="Permanent link to this comment by Jana Micaela"><abbr class="published" title="2017-08-23">August 23rd, 2017</abbr> at 07:59</a>
+
+      <p class="comment__util"> </p>
+  </li><!-- #comment-## -->
+
+ <li id="comment-21619" class="comment odd alt thread-odd thread-alt depth-1">
+      <b class="comment__title vcard">
+      <cite class="author fn">Royi</cite>
+    </b>
+  
+    
+    <blockquote class="comment__body">
+      <p>I just recalled 2 questions I would like to ask:</p>
+<p>1. How do you create those fabulous drawings?<br>
+2. Do you have any solution for the Cookie Hijacking problem? Nothing special to Firefox, but I was curious if there are approaches to prevent those at the browser development level (Besides Incognito Mode). Maybe something which links between the computer and the cookie or something.</p>
+    </blockquote>
+
+    <a class="comment__meta" href="https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/#comment-21619" rel="bookmark" title="Permanent link to this comment by Royi"><abbr class="published" title="2017-08-23">August 23rd, 2017</abbr> at 10:35</a>
+
+      <p class="comment__util"> </p>
+  </li><!-- #comment-## -->
+
+ <li id="comment-21620" class="comment even thread-even depth-1">
+      <b class="comment__title vcard">
+      <cite class="author fn">Dan G</cite>
+    </b>
+  
+    
+    <blockquote class="comment__body">
+      <p>But does it support styling scrollbars?</p>
+    </blockquote>
+
+    <a class="comment__meta" href="https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/#comment-21620" rel="bookmark" title="Permanent link to this comment by Dan G"><abbr class="published" title="2017-08-23">August 23rd, 2017</abbr> at 11:23</a>
+
+      <p class="comment__util"> </p>
+  </li><!-- #comment-## -->
+
+ <li id="comment-21622" class="comment odd alt thread-odd thread-alt depth-1">
+      <b class="comment__title vcard">
+      <cite class="author fn">karl</cite>
+    </b>
+  
+    
+    <blockquote class="comment__body">
+      <p>About the style caching.</p>
+<p>When navigating on a unique Web site with multiple pages, they often share common elements of style. Does the style caching reset for each navigation context? from <a href="http://example.com/1" rel="nofollow ugc" target="_blank">http://example.com/1</a> to <a href="http://example.com/2" rel="nofollow ugc" target="_blank">http://example.com/2</a></p>
+<p>And if it is being reset, were there tests to see if that would help gain performances to keep it around? Aka reuse the style caching from another page because we are on the same site, and the two pages use similar stylesheets and/or computed styles.</p>
+    </blockquote>
+
+    <a class="comment__meta" href="https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/#comment-21622" rel="bookmark" title="Permanent link to this comment by karl"><abbr class="published" title="2017-08-23">August 23rd, 2017</abbr> at 17:18</a>
+
+      <p class="comment__util"> </p>
+  </li><!-- #comment-## -->
+
+ <li id="comment-21625" class="comment even thread-even depth-1">
+      <b class="comment__title vcard">
+      <cite class="author fn">Dinesh</cite>
+    </b>
+  
+    
+    <blockquote class="comment__body">
+      <p>Linn, This article talks about CSS engine. I am just curious on how js is processed by Browser? is ther some thing called js engine?</p>
+    </blockquote>
+
+    <a class="comment__meta" href="https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/#comment-21625" rel="bookmark" title="Permanent link to this comment by Dinesh"><abbr class="published" title="2017-08-23">August 23rd, 2017</abbr> at 21:32</a>
+
+      <p class="comment__util"> </p>
+  <ol class="children">
+
+ <li id="comment-21628" class="comment byuser comment-author-lclarkmozilla-com bypostauthor odd alt depth-2">
+      <b class="comment__title vcard">
+      <cite class="author fn">Lin Clark</cite>
+    </b>
+  
+    
+    <blockquote class="comment__body">
+      <p>I have another article that talks a bit about that, <a href="https://hacks.mozilla.org/2017/02/a-crash-course-in-just-in-time-jit-compilers/">A crash course in just-in-time (JIT) compilers</a>.</p>
+    </blockquote>
+
+    <a class="comment__meta" href="https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/#comment-21628" rel="bookmark" title="Permanent link to this comment by Lin Clark"><abbr class="published" title="2017-08-24">August 24th, 2017</abbr> at 08:10</a>
+
+      <p class="comment__util"> </p>
+  </li><!-- #comment-## -->
+</ol><!-- .children -->
+</li><!-- #comment-## -->
+
+ <li id="comment-21626" class="comment even thread-odd thread-alt depth-1">
+      <b class="comment__title vcard">
+      <cite class="author fn">Gopalakrishna Palem</cite>
+    </b>
+  
+    
+    <blockquote class="comment__body">
+      <p>Would be great if this engine can be provided as “embeddable” generic engine usable by other projects also (and not just browsers).</p>
+<p>GK<br>
+http;//gk.palem.in/</p>
+    </blockquote>
+
+    <a class="comment__meta" href="https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/#comment-21626" rel="bookmark" title="Permanent link to this comment by Gopalakrishna Palem"><abbr class="published" title="2017-08-24">August 24th, 2017</abbr> at 07:36</a>
+
+      <p class="comment__util"> </p>
+  </li><!-- #comment-## -->
+
+ <li id="comment-21630" class="comment odd alt thread-even depth-1">
+      <b class="comment__title vcard">
+      <cite class="author fn">Henning</cite>
+    </b>
+  
+    
+    <blockquote class="comment__body">
+      <p>Great read!! Thanks for the insights and your comics / drawings surely help to quickly get a grip on what’s going on behind the scenes, love it.</p>
+    </blockquote>
+
+    <a class="comment__meta" href="https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/#comment-21630" rel="bookmark" title="Permanent link to this comment by Henning"><abbr class="published" title="2017-08-24">August 24th, 2017</abbr> at 08:18</a>
+
+      <p class="comment__util"> </p>
+  </li><!-- #comment-## -->
+
+ <li id="comment-21633" class="comment even thread-odd thread-alt depth-1">
+      <b class="comment__title vcard">
+      <cite class="author fn">John</cite>
+    </b>
+  
+    
+    <blockquote class="comment__body">
+      <p>Very compelling – concise, understandable, in fact IMPRESSIVE.  THANK you for all the amazing effort and obviously huge time you’ve invested in this .  I SO much appreciate your sharing it with me.</p>
+    </blockquote>
+
+    <a class="comment__meta" href="https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/#comment-21633" rel="bookmark" title="Permanent link to this comment by John"><abbr class="published" title="2017-08-24">August 24th, 2017</abbr> at 10:35</a>
+
+      <p class="comment__util"> </p>
+  </li><!-- #comment-## -->
+
+ <li id="comment-21636" class="comment odd alt thread-even depth-1">
+      <b class="comment__title vcard">
+      <cite class="author fn">Don</cite>
+    </b>
+  
+    
+    <blockquote class="comment__body">
+      <p>Excellent article.  Very creative and man I love how you mixed in cartoons.  I like how you describe the logical design with the computed styles form followed by the more detailed design ideas.   Flows nicely.  Thanks.</p>
+    </blockquote>
+
+    <a class="comment__meta" href="https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/#comment-21636" rel="bookmark" title="Permanent link to this comment by Don"><abbr class="published" title="2017-08-24">August 24th, 2017</abbr> at 18:10</a>
+
+      <p class="comment__util"> </p>
+  </li><!-- #comment-## -->
+
+ <li id="comment-21639" class="comment even thread-odd thread-alt depth-1">
+      <b class="comment__title vcard">
+      <cite class="author fn">Andrew</cite>
+    </b>
+  
+    
+    <blockquote class="comment__body">
+      <p>Hi. Thank you for writing this. Very interesting article, explains a lot!<br>
+Would you mind if I try to make Russian translation and post it on habrahabr.ru? Of course, I will link original, and share link to my translation here.</p>
+    </blockquote>
+
+    <a class="comment__meta" href="https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/#comment-21639" rel="bookmark" title="Permanent link to this comment by Andrew"><abbr class="published" title="2017-08-25">August 25th, 2017</abbr> at 00:31</a>
+
+      <p class="comment__util"> </p>
+  <ol class="children">
+
+ <li id="comment-21649" class="comment byuser comment-author-lclarkmozilla-com bypostauthor odd alt depth-2">
+      <b class="comment__title vcard">
+      <cite class="author fn">Lin Clark</cite>
+    </b>
+  
+    
+    <blockquote class="comment__body">
+      <p>Yes, please do!</p>
+    </blockquote>
+
+    <a class="comment__meta" href="https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/#comment-21649" rel="bookmark" title="Permanent link to this comment by Lin Clark"><abbr class="published" title="2017-08-25">August 25th, 2017</abbr> at 14:56</a>
+
+      <p class="comment__util"> </p>
+  <ol class="children">
+
+ <li id="comment-21666" class="comment even depth-3">
+      <b class="comment__title vcard">
+      <cite class="author fn">Andrew</cite>
+    </b>
+  
+    
+    <blockquote class="comment__body">
+      <p>I’ve finally finished :) Here is Russian translation:<br>
+<a href="https://habrahabr.ru/post/336722/" rel="nofollow ugc" target="_blank">https://habrahabr.ru/post/336722/</a></p>
+    </blockquote>
+
+    <a class="comment__meta" href="https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/#comment-21666" rel="bookmark" title="Permanent link to this comment by Andrew"><abbr class="published" title="2017-08-30">August 30th, 2017</abbr> at 01:46</a>
+
+      <p class="comment__util"> </p>
+  <ol class="children">
+
+ <li id="comment-21668" class="comment byuser comment-author-lclarkmozilla-com bypostauthor odd alt depth-4">
+      <b class="comment__title vcard">
+      <cite class="author fn">Lin Clark</cite>
+    </b>
+  
+    
+    <blockquote class="comment__body">
+      <p>Thank you!</p>
+    </blockquote>
+
+    <a class="comment__meta" href="https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/#comment-21668" rel="bookmark" title="Permanent link to this comment by Lin Clark"><abbr class="published" title="2017-08-30">August 30th, 2017</abbr> at 06:38</a>
+
+      <p class="comment__util"> </p>
+  </li><!-- #comment-## -->
+</ol><!-- .children -->
+</li><!-- #comment-## -->
+</ol><!-- .children -->
+</li><!-- #comment-## -->
+</ol><!-- .children -->
+</li><!-- #comment-## -->
+
+ <li id="comment-21641" class="comment even thread-even depth-1">
+      <b class="comment__title vcard">
+      <cite class="author fn">G Druiven</cite>
+    </b>
+  
+    
+    <blockquote class="comment__body">
+      <p>Could rules be made for naming CSS files. Would that help cpu decision making.</p>
+<p>Great article</p>
+    </blockquote>
+
+    <a class="comment__meta" href="https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/#comment-21641" rel="bookmark" title="Permanent link to this comment by G Druiven"><abbr class="published" title="2017-08-25">August 25th, 2017</abbr> at 02:47</a>
+
+      <p class="comment__util"> </p>
+  </li><!-- #comment-## -->
+
+ <li id="comment-21643" class="comment odd alt thread-odd thread-alt depth-1">
+      <b class="comment__title vcard">
+      <cite class="author fn">Gaurav Grover</cite>
+    </b>
+  
+    
+    <blockquote class="comment__body">
+      <p>Woww…. Great illustrations. What tools have you used for them?</p>
+    </blockquote>
+
+    <a class="comment__meta" href="https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/#comment-21643" rel="bookmark" title="Permanent link to this comment by Gaurav Grover"><abbr class="published" title="2017-08-25">August 25th, 2017</abbr> at 05:56</a>
+
+      <p class="comment__util"> </p>
+  <ol class="children">
+
+ <li id="comment-21650" class="comment byuser comment-author-lclarkmozilla-com bypostauthor even depth-2">
+      <b class="comment__title vcard">
+      <cite class="author fn">Lin Clark</cite>
+    </b>
+  
+    
+    <blockquote class="comment__body">
+      <p>I use Photoshop on a Wacom Cintiq</p>
+    </blockquote>
+
+    <a class="comment__meta" href="https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/#comment-21650" rel="bookmark" title="Permanent link to this comment by Lin Clark"><abbr class="published" title="2017-08-25">August 25th, 2017</abbr> at 14:57</a>
+
+      <p class="comment__util"> </p>
+  </li><!-- #comment-## -->
+</ol><!-- .children -->
+</li><!-- #comment-## -->
+
+ <li id="comment-21644" class="comment odd alt thread-even depth-1">
+      <b class="comment__title vcard">
+      <cite class="author fn">Holger</cite>
+    </b>
+  
+    
+    <blockquote class="comment__body">
+      <p>Nice article and well written and illustrated. Thanks for sharing!</p>
+    </blockquote>
+
+    <a class="comment__meta" href="https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/#comment-21644" rel="bookmark" title="Permanent link to this comment by Holger"><abbr class="published" title="2017-08-25">August 25th, 2017</abbr> at 06:13</a>
+
+      <p class="comment__util"> </p>
+  </li><!-- #comment-## -->
+
+ <li id="comment-21652" class="comment even thread-odd thread-alt depth-1">
+      <b class="comment__title vcard">
+      <cite class="author fn">Timothy</cite>
+    </b>
+  
+    
+    <blockquote class="comment__body">
+      <p>Brilliant article, so much to learn for a simple string concatenation developer like me.</p>
+<p>Love the drawings, they are not just cute, but really well thought out to explain the concepts.</p>
+<p>So much time and effort went into this writeup, thank you so much Lin for contributing this to the community!</p>
+    </blockquote>
+
+    <a class="comment__meta" href="https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/#comment-21652" rel="bookmark" title="Permanent link to this comment by Timothy"><abbr class="published" title="2017-08-25">August 25th, 2017</abbr> at 17:45</a>
+
+      <p class="comment__util"> </p>
+  </li><!-- #comment-## -->
+
+ <li id="comment-21662" class="comment odd alt thread-even depth-1">
+      <b class="comment__title vcard">
+      <cite class="author fn">Gorzas</cite>
+    </b>
+  
+    
+    <blockquote class="comment__body">
+      <p>Awesome work. I wish I could learn to do all of this stuff too.</p>
+    </blockquote>
+
+    <a class="comment__meta" href="https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/#comment-21662" rel="bookmark" title="Permanent link to this comment by Gorzas"><abbr class="published" title="2017-08-29">August 29th, 2017</abbr> at 03:18</a>
+
+      <p class="comment__util"> </p>
+  </li><!-- #comment-## -->
+
+ <li id="comment-21663" class="comment even thread-odd thread-alt depth-1">
+      <b class="comment__title vcard">
+      <cite class="author fn">Sophy</cite>
+    </b>
+  
+    
+    <blockquote class="comment__body">
+      <p>My first love is Firefox!</p>
+    </blockquote>
+
+    <a class="comment__meta" href="https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/#comment-21663" rel="bookmark" title="Permanent link to this comment by Sophy"><abbr class="published" title="2017-08-29">August 29th, 2017</abbr> at 07:39</a>
+
+      <p class="comment__util"> </p>
+  </li><!-- #comment-## -->
+
+ <li id="comment-21665" class="comment odd alt thread-even depth-1">
+      <b class="comment__title vcard">
+      <cite class="author fn">Jim Balter</cite>
+    </b>
+  
+    
+    <blockquote class="comment__body">
+      <p>I’ve been in the software field since 1965, and have seen a lot. This is brilliant technical communication, and I hope you inspire others to also be so detailed, accurate, informative,  and enjoyable.</p>
+    </blockquote>
+
+    <a class="comment__meta" href="https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/#comment-21665" rel="bookmark" title="Permanent link to this comment by Jim Balter"><abbr class="published" title="2017-08-30">August 30th, 2017</abbr> at 01:07</a>
+
+      <p class="comment__util"> </p>
+  </li><!-- #comment-## -->
+
+ <li id="comment-21669" class="comment even thread-odd thread-alt depth-1">
+      <b class="comment__title vcard">
+      <cite class="author fn">Koszał</cite>
+    </b>
+  
+    
+    <blockquote class="comment__body">
+      <p>I think this excellent article could be augmented by links to the code. (Could be posted in the comments and I assume the code is available on GitHub). Work distribution is done in file , the actual calculation happens in  and , the style cache is implemented in .</p>
+<p>I have been so grumpy lately but this article actually got me interested in Rust and hacking on FF!</p>
+    </blockquote>
+
+    <a class="comment__meta" href="https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/#comment-21669" rel="bookmark" title="Permanent link to this comment by Koszał"><abbr class="published" title="2017-08-30">August 30th, 2017</abbr> at 11:38</a>
+
+      <p class="comment__util"> </p>
+  </li><!-- #comment-## -->
+
+ <li id="comment-21670" class="comment odd alt thread-even depth-1">
+      <b class="comment__title vcard">
+      <cite class="author fn">Morgan</cite>
+    </b>
+  
+    
+    <blockquote class="comment__body">
+      <p>Hi Lin,</p>
+<p>I use Eloqua, and this has changed my life, in the whole 48h I’ve turned the setting on.</p>
+<p>Words cannot convey how I feel right now or give justice to the magnitude of how immensely cool this is…</p>
+<p>Thank you thank you thank you!<br>
+-m</p>
+    </blockquote>
+
+    <a class="comment__meta" href="https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/#comment-21670" rel="bookmark" title="Permanent link to this comment by Morgan"><abbr class="published" title="2017-08-30">August 30th, 2017</abbr> at 16:04</a>
+
+      <p class="comment__util"> </p>
+  </li><!-- #comment-## -->
+
+ <li id="comment-21685" class="comment even thread-odd thread-alt depth-1">
+      <b class="comment__title vcard">
+      <cite class="author fn">ke strom</cite>
+    </b>
+  
+    
+    <blockquote class="comment__body">
+      <p>Thanks’</p>
+<p>I like Firefox ,in the first place.because its’ free(gratis). Dureing the years func fine. thanks</p>
+    </blockquote>
+
+    <a class="comment__meta" href="https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/#comment-21685" rel="bookmark" title="Permanent link to this comment by ke strom"><abbr class="published" title="2017-09-01">September 1st, 2017</abbr> at 05:31</a>
+
+      <p class="comment__util"> </p>
+  </li><!-- #comment-## -->
+
+ <li id="comment-21702" class="comment odd alt thread-even depth-1">
+      <b class="comment__title vcard">
+      <cite class="author fn">Pradip Chalke</cite>
+    </b>
+  
+    
+    <blockquote class="comment__body">
+      <p>Great article!!<br>
+Looking forward to seeing this on Firefox! :) and excited to try out the new changes in Firefox.<br>
+Maybe it’s time to go back to Firefox from Chrome now.</p>
+    </blockquote>
+
+    <a class="comment__meta" href="https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/#comment-21702" rel="bookmark" title="Permanent link to this comment by Pradip Chalke"><abbr class="published" title="2017-09-05">September 5th, 2017</abbr> at 23:47</a>
+
+      <p class="comment__util"> </p>
+  </li><!-- #comment-## -->
+
+ <li id="comment-21708" class="comment even thread-odd thread-alt depth-1">
+      <b class="comment__title vcard">
+      <cite class="author fn">choeun</cite>
+    </b>
+  
+    
+    <blockquote class="comment__body">
+      <p>I translate this article into Korean. (Thanks Lin!)<br>
+If you guys want to read this article in Korean, please coming in:</p>
+<p><a href="http://techhtml.github.io/translations/inside-a-super-fast-css-engine-quantum-css-aka-stylo/index.html" rel="nofollow ugc" target="_blank">http://techhtml.github.io/translations/inside-a-super-fast-css-engine-quantum-css-aka-stylo/index.html</a></p>
+    </blockquote>
+
+    <a class="comment__meta" href="https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/#comment-21708" rel="bookmark" title="Permanent link to this comment by choeun"><abbr class="published" title="2017-09-07">September 7th, 2017</abbr> at 16:25</a>
+
+      <p class="comment__util"> </p>
+  </li><!-- #comment-## -->
+
+ <li id="comment-21714" class="comment odd alt thread-even depth-1">
+      <b class="comment__title vcard">
+      <cite class="author fn">ranjithsiji</cite>
+    </b>
+  
+    
+    <blockquote class="comment__body">
+      <p>Now really experiencing the real speed of servo in my firefox. The parallel processing is working super fast. Kudoz to the Quantum project, Stylo, Servo and RUST. :)</p>
+    </blockquote>
+
+    <a class="comment__meta" href="https://hacks.mozilla.org/2017/08/inside-a-super-fast-css-engine-quantum-css-aka-stylo/#comment-21714" rel="bookmark" title="Permanent link to this comment by ranjithsiji"><abbr class="published" title="2017-09-11">September 11th, 2017</abbr> at 08:05</a>
+
+      <p class="comment__util"> </p>
+  </li><!-- #comment-## -->
+      </ol>
+      </div>
+
+<p class="comments__closed"><b>Comments are closed for this article.</b></p>
+
+
+</section></main><!-- /#content-main -->
+
+  
+
+    <footer class="footer section section--fullwidth">
+      <div class="row">
+        <p class="block block--1">
+          Except where otherwise noted, content on this site is licensed
+          under the
+          <a href="https://creativecommons.org/licenses/by-sa/3.0/" rel="license external">Creative Commons Attribution Share-Alike License v3.0</a>
+          or any later version.
+        </p>
+        <img class="footer__logo" alt="the Mozilla dino logo" src="./Inside a super fast CSS engine_ Quantum CSS (aka Stylo) - Mozilla Hacks - the Web developer blog_files/dino.svg">
+      </div>
+    </footer>
+  </div>
+  <link rel="stylesheet" id="hljstheme-css" href="./Inside a super fast CSS engine_ Quantum CSS (aka Stylo) - Mozilla Hacks - the Web developer blog_files/solarized-light.css" type="text/css" media="all">
+<script type="text/javascript" src="./Inside a super fast CSS engine_ Quantum CSS (aka Stylo) - Mozilla Hacks - the Web developer blog_files/highlight.common.pack.js.download" id="hljs_preload-js"></script>
+<script type="text/javascript" src="./Inside a super fast CSS engine_ Quantum CSS (aka Stylo) - Mozilla Hacks - the Web developer blog_files/highlight.custom.pack.js.download" id="hljs-js"></script>
+    <style>pre.hljs {padding: 5px;}
+pre.hljs code {}</style>
+    <script type="text/javascript">
+    (function($, window) {
+        var init_fn_flag = false;
+        var init_fn = (function() {
+            if (init_fn_flag)
+                return;
+            init_fn_flag = true;
+             hljs.configure({"tabReplace":"    "});
+            $('pre code').each(function(i, block) {
+                hljs.highlightBlock(block);
+            });
+        });
+        $(document).ready(init_fn);
+        $(window).on("load", init_fn);
+    })(jQuery, window);
+    </script>
+  <script>
+    // External links should open in a new tab.
+    (function () {
+      var postLinks = document.querySelectorAll('#content-main a');
+
+      var origin = location.origin;
+
+      for (var i = 0; i < postLinks.length; i++) {
+        var link = postLinks[i];
+        if (link.origin !== origin && !link.getAttribute('target')) {
+          link.setAttribute('target', '_blank');
+        }
+      }
+    })();
+
+    window.addEventListener('load', function () {
+      if (document.querySelector('#newsletterForm')) {
+        var script = document.createElement('script');
+        var path = document.head.getAttribute('data-template-path');
+        script.setAttribute('src', path + '/js/newsletter.js');
+        document.head.appendChild(script);
+      }
+    });
+  </script>
+
+
+</body></html>
