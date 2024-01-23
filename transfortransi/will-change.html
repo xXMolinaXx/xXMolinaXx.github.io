@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    button{
+      background-color: blue;
+      width: 100px;
+      height: 30px;
+    }
+    .better{
+      will-change: trnasform ;
+      transition: transform 500ms;
+    }
+    .better:hover {
+      transform: translateY(5px);
+    }
+    .worst {
+      will-change: margin-top;
+      transition: margin-top 500ms;
+    }
+    .worst:hover{
+      margin-top: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <button class="better">better</button>
+    <button class="worst">worst</button>
+  </div>
+</body>
+</html>
