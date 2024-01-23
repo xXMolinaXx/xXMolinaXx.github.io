@@ -30,8 +30,8 @@ li {
   border-radius: 10px;
   box-shadow: 0 10px 16px 0 rgba(0, 0, 0, 0.1);
   opacity: 0;
-  transition: opacity 1000ms;
-  transition-delay: 2s;
+  transition: opacity 1s;
+  /* transition-delay: 1s; */
 }
 .nav-father:hover > .ul-absolute {
   opacity: 1;
