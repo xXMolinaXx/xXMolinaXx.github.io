@@ -1,6 +1,22 @@
 ## Transform
 - La propiedad transform sirve para transformar un elemento HTML mediante funciones. Estas funciones permitirán trasladar, escalar, rotar o torcer a lo largo, ancho y profundidad del elemento.
 
+TIPO | TRASLADRA | ESCALAR | INCLINAR | PERPECTIVA
+ -- | -- | -- | -- | --|
+ Multiple | translate() | scale() | rotate() | skew()| matrix()| perspective()
+ Eje x| translateX() | scaleX() | rotateX() | skewX()| matrixX()| perspectiveX()
+ Eje y| translateY() | scaleY() | rotateY() | skewY()| matrixY()| perspectiveY()
+  Eje z| translateZ() | scaleZ() | rotateZ() | skewZ()| matrixZ()| perspectiveZ()
+  3D | translate3d() | scale3d|rotate3d()
+ ejemplo
+ ```
+ .class{
+  
+ }
+ .class:hover{
+transform translate(1px,2px)
+ }
+ ```
 ## Transition
 - La propiedad transition sirve para agregar un intervalo de tiempo a un elemento HTML para visualizar los cambios de un punto inicial A, a un punto final B.
 
