@@ -19,6 +19,23 @@ html {
   font-size: 62.5%;
   font-family: "Roboto", sans-serif;
 }
+li {
+  list-style: none;
+}
+.nav-father > ul {
+  position: absolute; 
+  top: 85px;
+  background-color: #fff;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 10px 16px 0 rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  transition: opacity 1000ms;
+  transition-delay: 2s;
+}
+.nav-father:hover > .ul-absolute {
+  opacity: 1;
+}
 a {
   text-decoration: none;
   cursor: pointer;
@@ -110,6 +127,12 @@ main {
   width: 200px;
   height: 200px;
   object-fit: cover;
+  transition: transform 500ms ease-in-out, margin 500ms ease-in-out;
+}
+.my-image:hover {
+  transform: scale(1.5);
+  margin-top: 40px;
+  margin-bottom: 50px;
 }
 .font-color-gradient {
   background: linear-gradient(to right, var(--pink), var(--purple));
@@ -151,7 +174,7 @@ footer {
 }
 .text-myself {
   font-size: 2rem;
-  margin: 50px 300px;
+  padding: 10px;
 }
 
 @media screen and (min-width: 800px) {
