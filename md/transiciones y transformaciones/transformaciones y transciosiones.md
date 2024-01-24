@@ -16,7 +16,31 @@ TIPO | TRASLADRA | ESCALAR | INCLINAR | PERPECTIVA
  .class:hover{
 transform translate(1px,2px)
  }
+ // asi se pueden colocar varias animaciones
+ .class:hover{
+transform translateX(1px), translateY(1px);
+ }
  ```
+ - con la pseudo clase se ejecutan las transciociones y transformaciones
+ - rotate , skew se usan grados un ejemplo 20deg
+
+ - transfor-origin : se define donde sera le orgien del objeto para hacer las trasnformaciones
+ ```
+ div{
+  backgrounf:red;
+  width:100px;
+  height:100px;
+  transform-origin: left top
+ }
+ div:hover{
+  transform: rotate(20deg)
+ }
+ ```
+ - valores de trasnform origin left, top , botom, right
+
+ - transition-timing-function : linea|easy| ease-in-ease-out-ease-in-out|
+ - transition-delay: time
+
 ## Transition
 - La propiedad transition sirve para agregar un intervalo de tiempo a un elemento HTML para visualizar los cambios de un punto inicial A, a un punto final B.
 
