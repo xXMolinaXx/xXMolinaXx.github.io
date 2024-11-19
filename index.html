@@ -23,16 +23,19 @@
             </div>
 
             <nav class="w-full">
+                <a href="#start" class=" text-center font-bold  p-5">Inicio</a>
+                <a href="#portfolio" class=" text-center font-bold  p-5">Proyectos</a>
+                <a href="#lenguajes" class=" text-center font-bold  p-5">stack</a>
                 <a class="rounded-xl bg-blue-500  hover:bg-blue-600  shadow text-center font-bold text-white p-5"
                     href="public/cv.pdf" target="_blank">CV</a>
             </nav>
         </div>
     </header>
-    <main style="padding: 12px;">
-        <section class="flex-active center-horizontal"
+    <main class="p-12 md:px-96">
+        <section class="flex-active center-horizontal" id="start"
             style="padding-top: 100px; flex-direction: column;align-items: center;">
             <img src="public/img/yp.webp" class="rounded-image my-image" alt="imagen de kenny molina">
-            <div>
+            <div class=" md:w-[600px] my-16">
                 <p id="intro-1" class="my-4">
                     ¡Hola! Soy <strong>Kenny Molina</strong> , ingeniero en sistemas con una sólida formación académica
                     de la Universidad
@@ -151,14 +154,20 @@
     </main>
 
     <footer style="border-radius: 10px;" class="bg-blue-600 mx-5 mt-5 p-5">
-        <h3 class="text-center">Conctactame</h3>
-        <div class="flex-active center-horizontal">
-            <p style="font-weight: 500;margin: 10px 0px;"><img style="padding-right: 15px;" src="public/img/gmail.webp"
-                    alt="" width="30px">kenny.molina.murillo@gmail</p>
-            <p style="font-weight: 500;margin: 10px 0px;"><img style="padding-right: 15px;"
-                    src="public/img/location.webp" width="30px" alt="">Honduras, Distrito Central</p>
-            <p style="font-weight: 500;margin: 10px 0px;"><img style="padding-right: 15px;"
-                    src="public/img/smartphone.webp" alt="" width="30px"> 3360-8876</p>
+        <h3 class="text-center">Contactos</h3>
+        <div class="flex flex-wrap justify-center gap-10 mt-10">
+            <div class="flex w-full">
+                <img  src="public/img/gmail.webp" alt="" width="30px">
+                <p>kenny.molina.murillo@gmail</p>
+            </div>
+            <div class="flex w-full">
+                <img  src="public/img/location.webp" width="30px" alt="">
+                <p>Honduras, Distrito Central</p>
+            </div>
+            <div class="flex w-full">
+                <img  src="public/img/smartphone.webp" alt="" width="30px">
+                <p>3360-8876</p>
+            </div>
         </div>
         <button id="credits-btn" class="p-5 m-5">Créditos</button>
         <div id="credit-block" class="hidden">
@@ -196,8 +205,8 @@
             }
         }
         btmShowMore.addEventListener("click", myFunction);
-        credits.addEventListener("click", ()=>{
-            document.querySelector("#credit-block").style.display= 'block'
+        credits.addEventListener("click", () => {
+            document.querySelector("#credit-block").style.display = 'block'
         });
     </script>
 </body>
