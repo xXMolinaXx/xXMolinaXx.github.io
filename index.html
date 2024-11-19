@@ -15,20 +15,34 @@
     <header class="shadow-box">
         <div>
             <div class="w-full nav-father">
-                <p style="font-weight: bold;font-size: 3rem;cursor: pointer;" class="text-blue-500">Kenny Dev</p>
+                <p class="text-blue-500 text-5xl font-bold md:text-5xl md:font-bold">Kenny Dev</p>
                 <ul class="ul-absolute">
-                    <li style="margin-bottom: 5px;font-size: 2rem"><a href="#portfolio">Portafolio</a></li>
-                    <li style="font-size: 2rem;"><a href="#lenguajes">Stack de desarrolló</a></li>
+                    <a href="#start" class=" text-center font-bold  p-5">
+                        <li style="margin-bottom: 5px;font-size: 2rem"> Inicio</li>
+                    </a>
+                    <a href="#portfolio" class=" text-center font-bold  p-5">
+                        <li style="margin-bottom: 5px;font-size: 2rem"> Proyectos</li>
+                    </a>
+                    <a href="#lenguajes" class=" text-center font-bold  p-5">
+                        <li style="margin-bottom: 5px;font-size: 2rem"> stack</li>
+                    </a>
+                    <a href="public/cv.pdf" target="_blank">
+                        <li style="margin-bottom: 5px;font-size: 2rem"
+                            class="rounded-xl w-full bg-blue-500 my-2  hover:bg-blue-600   text-center font-bold text-white p-1">
+                            CV
+                        </li>
+                    </a>
                 </ul>
             </div>
 
-            <nav class="w-full">
+            <div class="hidden md:block w-full flex justify-end">
                 <a href="#start" class=" text-center font-bold  p-5">Inicio</a>
                 <a href="#portfolio" class=" text-center font-bold  p-5">Proyectos</a>
                 <a href="#lenguajes" class=" text-center font-bold  p-5">stack</a>
                 <a class="rounded-xl bg-blue-500  hover:bg-blue-600  shadow text-center font-bold text-white p-5"
                     href="public/cv.pdf" target="_blank">CV</a>
-            </nav>
+            </div>
+            <img src="public/img/hamburger.png" class="h-10 w-10 sm:hidden" alt="">
         </div>
     </header>
     <main class="p-12 md:px-96">
@@ -76,27 +90,20 @@
                     <h4 class="text-center text-3xl font-normal">
                         Kielsa
                     </h4>
-                    <img src="public/img/kielsa.webp"
-                        class="shadow-2xl rounded-xl border-2 border-blue-700 w-[200px] h-[150px] object-cover m-5"
+                    <img src="public/img/logo-kielsa-blanco.webp" class="bg-[#001689] p-5 rounded-3xl" width="200px"
                         alt="">
                 </a>
                 <a href="https://play.google.com/store/apps/details?id=com.kielsaecommerce&hl=es" title="hazme click">
                     <h4 class="text-center text-3xl font-normal">Kielsa app</h4>
-
-                    <img src="public/img/kielsa.webp"
-                    class="shadow-2xl rounded-xl border-2 border-blue-700 w-[200px] h-[150px] object-cover m-5"
+                    <img src="public/img/logo-kielsa-blanco.webp" class="bg-[#001689] p-5 rounded-3xl" width="200px"
                         alt="">
-
                 </a>
                 <a href="https://www.coinsa.hn/" title="hazme click">
                     <h4 class="text-center text-3xl font-normal">
                         Coinsa
                     </h4>
-
-                    <img src="public/img/coinsa.png"
-                    class="shadow-2xl rounded-xl border-2 border-blue-700 w-[200px] h-[150px] object-cover m-5"
-                        alt="">
-
+                    <img src="public/img/logo-coinsa-blanco_500x.webp" class="bg-[#026141] p-5 rounded-3xl"
+                        width="200px" alt="">
                 </a>
             </div>
             <!-- <p class="text-center" style="font-weight: bolder;margin: 30px;">Proyectos personales</p> -->
