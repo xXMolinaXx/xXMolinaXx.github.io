@@ -8,21 +8,23 @@
     <link rel="icon" href="public/favicon.ico" />
     <link rel="stylesheet" href="/styles/styles.css">
     <title>Kenny Jared Molina Murillo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
 <body>
     <header class="shadow-box">
         <div>
             <div class="w-full nav-father">
-                <p style="font-weight: bold;font-size: 3rem;cursor: pointer;">KenJ</p>
+                <p style="font-weight: bold;font-size: 3rem;cursor: pointer;" class="text-blue-500">Kenny Dev</p>
                 <ul class="ul-absolute">
                     <li style="margin-bottom: 5px;font-size: 2rem"><a href="#portfolio">Portafolio</a></li>
-                    <li style="font-size: 2rem;"><a href="#lenguajes">Lenguajes</a></li>
+                    <li style="font-size: 2rem;"><a href="#lenguajes">Stack de desarrolló</a></li>
                 </ul>
             </div>
 
             <nav class="w-full">
-                <a class="cv-link shadow-box" href="public/cv.pdf" target="_blank" rel="noopener noreferrer">CV</a>
+                <a class="rounded-xl bg-blue-500  hover:bg-blue-600  shadow text-center font-bold text-white p-5"
+                    href="public/cv.pdf" target="_blank">CV</a>
             </nav>
         </div>
     </header>
@@ -30,16 +32,31 @@
         <section class="flex-active center-horizontal"
             style="padding-top: 100px; flex-direction: column;align-items: center;">
             <img src="public/img/yp.webp" class="rounded-image my-image" alt="imagen de kenny molina">
-            <p class="text-center text-myself">
-                Hola, mi nombre es Kenny Molina y soy ingeniero en sistemas. Me gradué de la Universidad de Nacional
-                Autonoma de Honduras y tengo
-                experiencia en el desarrollo de software, redes, seguridad informática y bases de datos. Me apasiona la
-                tecnología y me gusta aprender cosas nuevas. Estoy buscando una oportunidad laboral que me permita
-                aplicar mis conocimientos y habilidades, así como crecer profesionalmente. Me considero una persona
-                responsable, creativa, proactiva y con buena capacidad de trabajo en equipo. Espero poder colaborar con
-                ustedes en sus proyectos y contribuir al éxito de su empresa.
-            </p>
-            <div style="margin-top: 50px;margin-bottom: 50px;">
+            <div>
+                <p id="intro-1" class="my-4">
+                    ¡Hola! Soy <strong>Kenny Molina</strong> , ingeniero en sistemas con una sólida formación académica
+                    de la Universidad
+                    Nacional Autónoma de Honduras. A lo largo de mi carrera, he adquirido experiencia en desarrollo de
+                    software, redes, seguridad informática y gestión de bases de datos.
+                </p>
+                <p id="intro-2" class="my-4 hidden">
+                    Soy una persona responsable, creativa y proactiva, con una excelente capacidad para el trabajo en
+                    equipo. Me enorgullece colaborar en proyectos que marcan la diferencia y contribuyen al éxito de la
+                    empresa. Estoy entusiasmado por la posibilidad de aportar mis conocimientos y formar parte de un
+                    producto que sea muy util para la sociedad.
+                </p>
+                <p id="intro-3" class="my-4 hidden">
+                    Espero con interés la oportunidad de colaborar con ustedes y contribuir al éxito de su empresa.
+                </p>
+                <div class="flex justify-center">
+                    <button id="show-more"
+                        class="p-3 m-1 rounded-xl  text-blue-500 hover:text-blue-600 hover:bg-blue-600 hover:text-white">
+                        MOSTRAR MAS
+                    </button>
+                </div>
+
+            </div>
+            <div class="flex justify-center flex-wrap py-5">
                 <a href="https://www.linkedin.com/in/kenny-jared-molina-murillo-a7048a202">
                     <img src="public/img/OIP.webp" alt="logo de linkedin" width="50px" style="margin: 0px 20px;">
                 </a>
@@ -49,12 +66,41 @@
             </div>
         </section>
         <section id="portfolio" class="mt-10">
-            <h1 class="text-center">Portafolio</h1>
-            <p class="text-center">
-                Puedes hacer clic en la lista de abajo para ver los proyectos
-            </p>
-            <p class="text-center" style="font-weight: bolder;margin: 30px;">Proyectos personales</p>
+            <h2 class="text-center text-3xl font-bold">Portafolio</h2>
+            <p class="text-center" style="font-weight: bold;margin: 30px;">Experiencia en Proyectos</p>
             <div class="flex-active wrap">
+                <a href="https://kielsa.com/" title="hazme click">
+                    <div class="shadow-box card">
+                        <img src="public/img/kielsa.webp" alt="">
+                        <div style="padding: 10px;">
+                            <h4>
+                                Kielsa
+                            </h4>
+                        </div>
+                    </div>
+                </a>
+                <a href="https://play.google.com/store/apps/details?id=com.kielsaecommerce&hl=es" title="hazme click">
+                    <div class="shadow-box card">
+                        <img src="public/img/kielsa.webp" alt="">
+                        <div style="padding: 10px;">
+                            <h4>Kielsa app</h4>
+                        </div>
+                    </div>
+                </a>
+                <a href="https://www.coinsa.hn/" title="hazme click">
+                    <div class="shadow-box card">
+                        <img src="public/img/coinsa.png" alt="">
+                        <div style="padding: 10px;">
+                            <h4>
+                                Coinsa
+                            </h4>
+                        </div>
+
+                    </div>
+                </a>
+            </div>
+            <!-- <p class="text-center" style="font-weight: bolder;margin: 30px;">Proyectos personales</p> -->
+            <!-- <div class="flex-active wrap">
                 <a href="https://chat-hn-85a02.web.app/" title="hazme click">
                     <div class="shadow-box card">
                         <img src="public/img/chat-front.png" alt="">
@@ -88,73 +134,23 @@
 
                     </div>
                 </a>
-            </div>
-            <p class="text-center" style="font-weight: bold;margin: 30px;">Proyectos en los que he trabajado</p>
-            <div class="flex-active wrap">
-                <a href="https://kielsa.com/" title="hazme click">
-                    <div class="shadow-box card">
-                        <img src="public/img/kielsa.webp" alt="">
-                        <div style="padding: 10px;">
-                            <h4>
-                                Kielsa
-                            </h4>
-                        </div>
-                    </div>
-                </a>
-                <a href="https://play.google.com/store/apps/details?id=com.kielsaecommerce&hl=es" title="hazme click">
-                    <div class="shadow-box card">
-                        <img src="public/img/kielsa.webp" alt="">
-                        <div style="padding: 10px;">
-                            <h4>Kielsa app</h4>
-                        </div>
-                    </div>
-                </a>
-                <a href="https://www.coinsa.hn/" title="hazme click">
-                    <div class="shadow-box card">
-                        <img src="public/img/coinsa.png" alt="">
-                        <div style="padding: 10px;">
-                            <h4>
-                                Coinsa
-                            </h4>
-                        </div>
+            </div> -->
 
-                    </div>
-                </a>
-                <a href="https://www.farmex.com.ni/" title="hazme click">
-                    <div class="shadow-box card">
-                        <img src="public/img/farmex.webp" alt="">
-                        <div style="padding: 10px;">
-                            <h4>
-                                Farmex
-                            </h4>
-                        </div>
-
-                    </div>
-                </a>
-                <a href="https://www.glodishn.com/" title="hazme click">
-                    <div class="shadow-box card">
-                        <img src="public/img/glodis.png" alt="">
-                        <div style="padding: 10px;">
-                            <h4>
-                                glodis app para android/ios
-                            </h4>
-                        </div>
-
-                    </div>
-                </a>
-            </div>
         </section>
-        <section id="lenguajes">
-            <h1 class="text-center" style="margin: 40px;">Lenguajes de programación que manejo</h1>
-            <div class="flex-active center-horizontal">
-                <img class="card-language" src="public/img/js.webp" alt="">
-                <img class="card-language" src="public/img/java.webp" alt="">
-                <img class="card-language" src="public/img/python.webp" alt="">
+        <section id="lenguajes" class="my-16">
+            <h2 class="text-center text-3xl font-bold my-5">Stack de desarollo</h2>
+            <div class="flex flex-wrap justify-center gap-10 my-10">
+                <img src="public/img/js.png" class="w-32 h-32" alt="">
+                <img src="public/img/python.png" class="w-32 h-32" alt="">
+                <img src="public/img/science.png" class="w-32 h-32" alt="">
+                <img src="public/img/typescript.png" class="w-32 h-32" alt="">
+                <img src="public/img/mongo.svg" class="w-40 h-40" alt="">
+                <img src="public/img/programing.png" class="w-32 h-32" alt="">
             </div>
         </section>
     </main>
 
-    <footer style="margin: 0px 20px 5px 20px;padding: 20px; border-radius: 10px;">
+    <footer style="border-radius: 10px;" class="bg-blue-600 mx-5 mt-5 p-5">
         <h3 class="text-center">Conctactame</h3>
         <div class="flex-active center-horizontal">
             <p style="font-weight: 500;margin: 10px 0px;"><img style="padding-right: 15px;" src="public/img/gmail.webp"
@@ -164,9 +160,46 @@
             <p style="font-weight: 500;margin: 10px 0px;"><img style="padding-right: 15px;"
                     src="public/img/smartphone.webp" alt="" width="30px"> 3360-8876</p>
         </div>
-        <a href="https://www.flaticon.com/free-icons/phone" title="phone icons">Phone icons created by Freepik -
-            Flaticon</a>
+        <button id="credits-btn" class="p-5 m-5">Créditos</button>
+        <div id="credit-block" class="hidden">
+            <a href="https://www.flaticon.com/free-icons/phone" title="phone icons">Phone icons created by Freepik -
+                Flaticon</a>
+            <a href="https://www.flaticon.com/free-icons/javascript" title="javascript icons">Javascript icons created
+                by
+                Freepik - Flaticon</a>
+            <a href="https://www.flaticon.com/free-icons/typescript" title="typescript icons">Typescript icons created
+                by
+                Freepik - Flaticon</a>
+            <a href="https://www.flaticon.com/free-icons/python" title="python icons">Python icons created by Freepik -
+                Flaticon</a>
+        </div>
+
     </footer>
+    <script>
+        const btmShowMore = document.querySelector("#show-more")
+        const credits = document.querySelector("#credits-btn")
+        let showIntro = 1
+        const intro2 = document.querySelector('#intro-2')
+        const intro3 = document.querySelector('#intro-3')
+        function myFunction() {
+
+            showIntro++
+            if (showIntro > 3) {
+                showIntro = 1
+                intro3.style.display = 'none'
+                intro2.style.display = 'none'
+            }
+            if (showIntro === 2) intro2.style.display = 'block'
+            if (showIntro === 3) {
+                btmShowMore.innerHTML = 'MOSTRAR MENOS'
+                intro3.style.display = 'block'
+            }
+        }
+        btmShowMore.addEventListener("click", myFunction);
+        credits.addEventListener("click", ()=>{
+            document.querySelector("#credit-block").style.display= 'block'
+        });
+    </script>
 </body>
 
 </html>
