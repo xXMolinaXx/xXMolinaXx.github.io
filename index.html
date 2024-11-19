@@ -34,7 +34,7 @@
     <main class="p-12 md:px-96">
         <section class="flex-active center-horizontal" id="start"
             style="padding-top: 100px; flex-direction: column;align-items: center;">
-            <img src="public/img/yp.webp" class="rounded-image my-image" alt="imagen de kenny molina">
+            <img src="public/img/yp.webp" class="rounded-image my-image shadow-2xl" alt="imagen de kenny molina">
             <div class=" md:w-[600px] my-16">
                 <p id="intro-1" class="my-4">
                     ¡Hola! Soy <strong>Kenny Molina</strong> , ingeniero en sistemas con una sólida formación académica
@@ -53,7 +53,7 @@
                 </p>
                 <div class="flex justify-center">
                     <button id="show-more"
-                        class="p-3 m-1 rounded-xl  text-blue-500 hover:text-blue-600 hover:bg-blue-600 hover:text-white">
+                        class="p-3 m-1 rounded-xl  text-blue-500 hover:text-blue-600 hover:bg-blue-300  hover:text-black">
                         MOSTRAR MAS
                     </button>
                 </div>
@@ -71,35 +71,32 @@
         <section id="portfolio" class="mt-10">
             <h2 class="text-center text-3xl font-bold">Portafolio</h2>
             <p class="text-center" style="font-weight: bold;margin: 30px;">Experiencia en Proyectos</p>
-            <div class="flex-active wrap">
+            <div class="flex flex-wrap gap-10 justify-center">
                 <a href="https://kielsa.com/" title="hazme click">
-                    <div class="shadow-box card">
-                        <img src="public/img/kielsa.webp" alt="">
-                        <div style="padding: 10px;">
-                            <h4>
-                                Kielsa
-                            </h4>
-                        </div>
-                    </div>
+                    <h4 class="text-center text-3xl font-normal">
+                        Kielsa
+                    </h4>
+                    <img src="public/img/kielsa.webp"
+                        class="shadow-2xl rounded-xl border-2 border-blue-700 w-[200px] h-[150px] object-cover m-5"
+                        alt="">
                 </a>
                 <a href="https://play.google.com/store/apps/details?id=com.kielsaecommerce&hl=es" title="hazme click">
-                    <div class="shadow-box card">
-                        <img src="public/img/kielsa.webp" alt="">
-                        <div style="padding: 10px;">
-                            <h4>Kielsa app</h4>
-                        </div>
-                    </div>
+                    <h4 class="text-center text-3xl font-normal">Kielsa app</h4>
+
+                    <img src="public/img/kielsa.webp"
+                    class="shadow-2xl rounded-xl border-2 border-blue-700 w-[200px] h-[150px] object-cover m-5"
+                        alt="">
+
                 </a>
                 <a href="https://www.coinsa.hn/" title="hazme click">
-                    <div class="shadow-box card">
-                        <img src="public/img/coinsa.png" alt="">
-                        <div style="padding: 10px;">
-                            <h4>
-                                Coinsa
-                            </h4>
-                        </div>
+                    <h4 class="text-center text-3xl font-normal">
+                        Coinsa
+                    </h4>
 
-                    </div>
+                    <img src="public/img/coinsa.png"
+                    class="shadow-2xl rounded-xl border-2 border-blue-700 w-[200px] h-[150px] object-cover m-5"
+                        alt="">
+
                 </a>
             </div>
             <!-- <p class="text-center" style="font-weight: bolder;margin: 30px;">Proyectos personales</p> -->
@@ -155,17 +152,17 @@
 
     <footer style="border-radius: 10px;" class="bg-blue-600 mx-5 mt-5 p-5">
         <h3 class="text-center">Contactos</h3>
-        <div class="flex flex-wrap justify-center gap-10 mt-10">
+        <div class="flex md:flex-row  flex-wrap justify-center gap-10 mt-10">
             <div class="flex w-full">
-                <img  src="public/img/gmail.webp" alt="" width="30px">
+                <img src="public/img/gmail.webp" alt="" width="30px">
                 <p>kenny.molina.murillo@gmail</p>
             </div>
             <div class="flex w-full">
-                <img  src="public/img/location.webp" width="30px" alt="">
+                <img src="public/img/location.webp" width="30px" alt="">
                 <p>Honduras, Distrito Central</p>
             </div>
             <div class="flex w-full">
-                <img  src="public/img/smartphone.webp" alt="" width="30px">
+                <img src="public/img/smartphone.webp" alt="" width="30px">
                 <p>3360-8876</p>
             </div>
         </div>
