@@ -1,0 +1,27 @@
+{
+  "name": "xxmolinaxx.github.io",
+  "version": "1.0.0",
+  "description": "my portafolio",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {
+    "tailwindcss": "^3.4.15"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:css": "tailwindcss build styles/tailwind.css -o styles/output.css"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xXMolinaXx/xXMolinaXx.github.io.git"
+  },
+  "keywords": [
+    "portafolio"
+  ],
+  "author": "kenny Jared Molina Murillo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/xXMolinaXx/xXMolinaXx.github.io/issues"
+  },
+  "homepage": "https://github.com/xXMolinaXx/xXMolinaXx.github.io#readme"
+}
