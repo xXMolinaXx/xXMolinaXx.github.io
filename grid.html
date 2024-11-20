@@ -1,12 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles/styles-grid.css">
     <title>Document</title>
+    <!-- <link rel="stylesheet" href="/styles/styles.css"> -->
+    <link href="styles/output.css" rel="stylesheet">
 </head>
+
 <body>
+    <header class="shadow-box">
+        <div>
+            <div class="w-full nav-father">
+                <p class="text-blue-500 text-5xl font-bold md:text-5xl md:font-bold">Kenny Dev</p>
+                <ul class="ul-absolute">
+                    <a href="#start" class=" text-center font-bold  p-5">
+                        <li style="margin-bottom: 5px;font-size: 2rem"> Inicio</li>
+                    </a>
+                    <a href="#portfolio" class=" text-center font-bold  p-5">
+                        <li style="margin-bottom: 5px;font-size: 2rem"> Proyectos</li>
+                    </a>
+                    <a href="#lenguajes" class=" text-center font-bold  p-5">
+                        <li style="margin-bottom: 5px;font-size: 2rem"> stack</li>
+                    </a>
+                    <a href="public/cv.pdf" target="_blank">
+                        <li style="margin-bottom: 5px;font-size: 2rem"
+                            class="rounded-xl w-full bg-blue-500 my-2  hover:bg-blue-600   text-center font-bold text-white p-1">
+                            CV
+                        </li>
+                    </a>
+                </ul>
+            </div>
+
+            <div class="hidden md:block w-full flex justify-end">
+                <a href="#start" class=" text-center font-bold  p-5">Inicio</a>
+                <a href="#portfolio" class=" text-center font-bold  p-5">Proyectos</a>
+                <a href="#lenguajes" class=" text-center font-bold  p-5">stack</a>
+                <a class="rounded-xl bg-blue-500  hover:bg-blue-600  shadow text-center font-bold text-white p-5"
+                    href="public/cv.pdf" target="_blank">CV</a>
+            </div>
+            <img src="public/img/hamburger.png" class="h-10 w-10 sm:hidden" alt="">
+        </div>
+    </header>
     <div class="container">
         <div class="item">1</div>
         <div class="item">2</div>
@@ -28,4 +65,5 @@
         <div class="item">8</div>
     </div>
 </body>
+
 </html>
